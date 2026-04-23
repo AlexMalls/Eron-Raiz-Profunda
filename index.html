@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eron Raiz-Profunda — Ficha D&D</title>
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #f4e8c1;
+    --parchment-dark: #e8d5a3;
+    --parchment-deeper: #d4b896;
+    --ink: #2c1810;
+    --ink-light: #4a2e1a;
+    --red: #8b1a1a;
+    --red-light: #c0392b;
+    --gold: #8b6914;
+    --gold-light: #c9a227;
+    --shadow: rgba(44,24,16,0.25);
+    --border: #6b4c2a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a0f0a;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(139,26,26,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(139,105,20,0.1) 0%, transparent 50%);
+    font-family: 'Crimson Text', Georgia, serif;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .sheet-wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+    background: var(--parchment);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    border: 3px solid var(--border);
+    box-shadow: 0 0 60px rgba(0,0,0,0.8), inset 0 0 80px rgba(139,105,20,0.08);
+    position: relative;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--ink);
+    background-image: linear-gradient(135deg, #1a0a05 0%, #3d1f0e 50%, #1a0a05 100%);
+    padding: 24px 32px 20px;
+    position: relative;
+    border-bottom: 4px solid var(--gold);
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg, transparent, transparent 10px,
+      rgba(139,105,20,0.03) 10px, rgba(139,105,20,0.03) 11px
+    );
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 8px;
+  }
+  .dnd-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border: 1px solid var(--gold);
+    padding: 4px 10px;
+    opacity: 0.8;
+  }
+  .char-name {
+    font-family: 'Cinzel', serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--parchment);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .char-sub {
+    font-family: 'Crimson Text', serif;
+    font-size: 14px;
+    color: var(--gold-light);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    opacity: 0.9;
+  }
+  .header-badges {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    background: rgba(139,105,20,0.15);
+    border: 1px solid var(--gold);
+    padding: 5px 14px;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: var(--gold-light);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* DECORATIVE DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 24px 16px;
+    padding-top: 16px;
+  }
+  .divider-line { flex: 1; height: 1px; background: var(--parchment-deeper); }
+  .divider-gem {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    box-shadow: 0 0 6px var(--gold-light);
+  }
+
+  /* MAIN GRID */
+  .main-content { padding: 20px 24px; }
+
+  /* STAT BOXES ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .stat-box {
+    background: var(--parchment-dark);
+    border: 2px solid var(--border);
+    text-align: center;
+    padding: 10px 6px 8px;
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .stat-box::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--red);
+  }
+  .stat-label {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .stat-mod {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+    display: block;
+  }
+  .stat-base {
+    font-size: 12px;
+    color: var(--ink-light);
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* COMBAT STATS */
+  .combat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .combat-box {
+    background: var(--ink);
+    border: 2px solid var(--border);
+    color: var(--parchment);
+    text-align: center;
+    padding: 10px 6px;
+  }
+  .combat-box .stat-label { color: var(--gold-light); }
+  .combat-box .stat-mod { color: var(--parchment); font-size: 24px; }
+
+  /* SECTIONS */
+  .section {
+    margin-bottom: 20px;
+  }
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--parchment);
+    background: var(--ink);
+    padding: 7px 14px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-left: 4px solid var(--red);
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* TWO COLUMN LAYOUT */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* SAVES TABLE */
+  .saves-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .save-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--parchment-dark);
+    border: 1px solid var(--parchment-deeper);
+    padding: 5px 10px;
+  }
+  .save-name { font-size: 13px; }
+  .save-val {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--red);
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  .skill-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 10px;
+    border-bottom: 1px solid rgba(107,76,42,0.2);
+    font-size: 13px;
+  }
+  .skill-row:hover { background: rgba(139,105,20,0.08); }
+  .skill-val {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--red);
+    min-width: 32px;
+    text-align: right;
+  }
+  .skill-high { color: var(--gold); }
+
+  /* FEATURES */
+  .feature-item {
+    background: var(--parchment-dark);
+    border: 1px solid var(--parchment-deeper);
+    border-left: 3px solid var(--red);
+    padding: 10px 14px;
+    margin-bottom: 8px;
+  }
+  .feature-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .feature-desc {
+    font-size: 13px;
+    color: var(--ink-light);
+    line-height: 1.5;
+  }
+
+  /* ARROW SPELLS */
+  .arrow-item {
+    background: var(--parchment-dark);
+    border: 1px solid var(--parchment-deeper);
+    border-left: 3px solid var(--gold);
+    padding: 10px 14px;
+    margin-bottom: 8px;
+  }
+  .arrow-name {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 3px;
+  }
+  .arrow-desc { font-size: 12px; color: var(--ink-light); line-height: 1.5; }
+
+  /* EQUIPMENT */
+  .weapon-box {
+    background: var(--parchment-dark);
+    border: 2px solid var(--border);
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .weapon-name {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .weapon-name::before {
+    content: '⚔';
+    color: var(--red);
+    font-size: 12px;
+  }
+  .weapon-stats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  .wstat {
+    background: var(--ink);
+    color: var(--gold-light);
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    padding: 2px 8px;
+    letter-spacing: 0.5px;
+  }
+  .weapon-desc { font-size: 12px; color: var(--ink-light); line-height: 1.5; margin-top: 6px; }
+
+  .items-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .item-row {
+    background: var(--parchment-dark);
+    border: 1px solid var(--parchment-deeper);
+    padding: 6px 12px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .item-note { color: var(--ink-light); font-style: italic; font-size: 11px; }
+
+  /* RESOURCES */
+  .resources-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .resource-box {
+    background: var(--ink);
+    border: 2px solid var(--gold);
+    padding: 10px 20px;
+    text-align: center;
+    min-width: 140px;
+  }
+  .resource-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .resource-val {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    color: var(--parchment);
+    font-weight: 700;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: var(--ink);
+    border-top: 3px solid var(--gold);
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .footer-langs {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .footer-langs span { color: var(--parchment); margin-left: 6px; font-style: italic; }
+  .footer-prof {
+    font-size: 11px;
+    color: rgba(244,232,193,0.6);
+    font-style: italic;
+    max-width: 400px;
+    text-align: right;
+    line-height: 1.4;
+  }
+
+  /* Corner decorations */
+  .corner {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-color: var(--gold);
+    border-style: solid;
+    opacity: 0.6;
+  }
+  .corner-tl { top: 8px; left: 8px; border-width: 2px 0 0 2px; }
+  .corner-tr { top: 8px; right: 8px; border-width: 2px 2px 0 0; }
+  .corner-bl { bottom: 8px; left: 8px; border-width: 0 0 2px 2px; }
+  .corner-br { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; }
+
+  /* Section icon */
+  .s-icon { color: var(--gold-light); }
+
+  @media (max-width: 700px) {
+    .stats-row { grid-template-columns: repeat(3,1fr); }
+    .combat-row { grid-template-columns: repeat(2,1fr); }
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .saves-grid { grid-template-columns: 1fr; }
+    .items-list { grid-template-columns: 1fr; }
+    .char-name { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet-wrapper">
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div class="dnd-logo">D&amp;D 5e</div>
+    </div>
+    <div class="char-name">Eron Raiz-Profunda</div>
+    <div class="char-sub">Elfo — Ranger / Guerreiro / Ladino — Nível 14</div>
+    <div class="header-badges">
+      <div class="badge">⚔ Proficiência +5</div>
+      <div class="badge">🏹 Arquearia</div>
+      <div class="badge">🌑 Espreitador</div>
+      <div class="badge">🗡 Assassino</div>
+      <div class="badge">✨ Flecha Arcana</div>
+    </div>
+  </div>
+
+  <div class="main-content">
+
+    <!-- ATRIBUTOS -->
+    <div class="section">
+      <div class="section-title"><span class="s-icon">◆</span> Atributos</div>
+      <div class="stats-row">
+        <div class="stat-box">
+          <span class="stat-label">Força</span>
+          <span class="stat-mod">-1</span>
+          <span class="stat-base">8</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Destreza</span>
+          <span class="stat-mod">+4</span>
+          <span class="stat-base">19</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Constituição</span>
+          <span class="stat-mod">+2</span>
+          <span class="stat-base">14</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Inteligência</span>
+          <span class="stat-mod">0</span>
+          <span class="stat-base">10</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Sabedoria</span>
+          <span class="stat-mod">+2</span>
+          <span class="stat-base">14</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Carisma</span>
+          <span class="stat-mod">+1</span>
+          <span class="stat-base">12</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMBAT -->
+    <div class="section">
+      <div class="section-title"><span class="s-icon">◆</span> Combate</div>
+      <div class="combat-row">
+        <div class="combat-box">
+          <span class="stat-label">CA</span>
+          <span class="stat-mod">17</span>
+        </div>
+        <div class="combat-box">
+          <span class="stat-label">Pontos de Vida</span>
+          <span class="stat-mod">109 / 109</span>
+        </div>
+        <div class="combat-box">
+          <span class="stat-label">Iniciativa</span>
+          <span class="stat-mod">+4</span>
+        </div>
+        <div class="combat-box">
+          <span class="stat-label">Velocidade</span>
+          <span class="stat-mod">12m</span>
+        </div>
+      </div>
+      <div class="resources-row">
+        <div class="resource-box">
+          <span class="resource-label">Sortes Usadas</span>
+          <span class="resource-val">3 / 3</span>
+        </div>
+        <div class="resource-box">
+          <span class="resource-label">Flecha Arcana</span>
+          <span class="resource-val">2 / 2</span>
+        </div>
+        <div class="resource-box">
+          <span class="resource-label">Dados de Vida</span>
+          <span class="resource-val">1 / 14</span>
+        </div>
+        <div class="resource-box">
+          <span class="resource-label">Teste de Sanidade</span>
+          <span class="resource-val">1</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAVES & SKILLS -->
+    <div class="two-col">
+      <div class="section">
+        <div class="section-title"><span class="s-icon">◆</span> Resistências</div>
+        <div class="saves-grid">
+          <div class="save-row"><span class="save-name">Força</span><span class="save-val">-1</span></div>
+          <div class="save-row"><span class="save-name">Inteligência</span><span class="save-val">+5</span></div>
+          <div class="save-row"><span class="save-name">Destreza</span><span class="save-val">+9</span></div>
+          <div class="save-row"><span class="save-name">Sabedoria</span><span class="save-val">+2</span></div>
+          <div class="save-row"><span class="save-name">Constituição</span><span class="save-val">+2</span></div>
+          <div class="save-row"><span class="save-name">Carisma</span><span class="save-val">+1</span></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-title"><span class="s-icon">◆</span> Sentidos</div>
+        <div class="feature-item" style="margin-bottom:0">
+          <div class="feature-name">Percepção Passiva</div>
+          <div class="feature-desc" style="font-size:22px;font-family:'Cinzel',serif;font-weight:700;color:var(--red)">17</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKILLS -->
+    <div class="section">
+      <div class="section-title"><span class="s-icon">◆</span> Perícias</div>
+      <div class="skills-grid">
+        <div class="skill-row"><span>Acrobacia (Des)</span><span class="skill-val">+9</span></div>
+        <div class="skill-row"><span>Percepção (Sab)</span><span class="skill-val skill-high">+7</span></div>
+        <div class="skill-row"><span>Atletismo (For)</span><span class="skill-val">+9</span></div>
+        <div class="skill-row"><span>Persuasão (Car)</span><span class="skill-val">+6</span></div>
+        <div class="skill-row"><span>Sobrevivência (Sab)</span><span class="skill-val skill-high">+7</span></div>
+        <div class="skill-row"><span>Furtividade (Des)</span><span class="skill-val skill-high">+14 ★</span></div>
+        <div class="skill-row"><span>Lidar c/ Animais (Sab)</span><span class="skill-val">+7</span></div>
+        <div class="skill-row"><span>Prestidigitação (Des)</span><span class="skill-val">+4</span></div>
+        <div class="skill-row"><span>Intuição (Sab)</span><span class="skill-val">+2</span></div>
+        <div class="skill-row"><span>Medicina (Sab)</span><span class="skill-val">+2</span></div>
+        <div class="skill-row"><span>Enganação (Car)</span><span class="skill-val">+1</span></div>
+        <div class="skill-row"><span>Intimidação (Car)</span><span class="skill-val">+1</span></div>
+        <div class="skill-row"><span>Atuação (Car)</span><span class="skill-val">+1</span></div>
+        <div class="skill-row"><span>Arcanismo / História / Investigação / Natureza / Religião</span><span class="skill-val">0</span></div>
+      </div>
+    </div>
+
+    <!-- EQUIPMENT -->
+    <div class="section">
+      <div class="section-title"><span class="s-icon">◆</span> Armas</div>
+      <div class="weapon-box">
+        <div class="weapon-name">Arco de Ente</div>
+        <div class="weapon-stats">
+          <span class="wstat">Ataque +13</span>
+          <span class="wstat">Dano d10+5</span>
+          <span class="wstat">Range 120</span>
+          <span class="wstat">Furtivo 3d6</span>
+          <span class="wstat">Arcano (2): 2d6</span>
+          <span class="wstat">1º Turno d8</span>
+          <span class="wstat">Caçador d6</span>
+          <span class="wstat">Radiante 4d6/DL</span>
+        </div>
+        <div class="weapon-desc">Crítico: +2d10+5 perfurante · 8 Flechas Envenenadas · Municação: 0/20</div>
+      </div>
+      <div class="weapon-box">
+        <div class="weapon-name">Adagas (8 unidades)</div>
+        <div class="weapon-stats">
+          <span class="wstat">Ataque +11</span>
+          <span class="wstat">Dano d4+4</span>
+          <span class="wstat">Furtivo 2d6</span>
+          <span class="wstat">Caçador d6</span>
+          <span class="wstat">Finesse</span>
+          <span class="wstat">Arremessável</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="s-icon">◆</span> Itens & Tesouro</div>
+      <div style="margin-bottom:10px;font-family:'Cinzel',serif;font-size:13px;color:var(--gold)">
+        💰 429 GP &nbsp;|&nbsp; 4 SP &nbsp;|&nbsp; 9 CP &nbsp;&nbsp;·&nbsp;&nbsp; Peso: 3/120
+      </div>
+      <div class="items-list">
+        <div class="item-row">Anel do Mago <span class="item-note">+1 CD resist. Magia</span></div>
+        <div class="item-row">Botas Lijeiras <span class="item-note">+3m de Deslocamento</span></div>
+        <div class="item-row">Luvas do Acerto <span class="item-note">+2 para Acertos</span></div>
+        <div class="item-row">Poções de Cura <span class="item-note">× 2</span></div>
+        <div class="item-row">Kit de Veneno</div>
+        <div class="item-row">Ferramentas de Ladrão</div>
+        <div class="item-row">Tocha</div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="section">
+      <div class="section-title"><span class="s-icon">◆</span> Habilidades de Classe & Raça</div>
+
+      <div class="feature-item">
+        <div class="feature-name">Sorte</div>
+        <div class="feature-desc">3 dados/dia (usável após o resultado). Vantagem em qualquer teste OU desvantagem em ataque de inimigo.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Emboscador Aterrador</div>
+        <div class="feature-desc">No 1º turno: +3m de deslocamento. Se atacar, pode fazer um ataque adicional; se acertar, causa 1d8 de dano extra.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Consciência Primordial</div>
+        <div class="feature-desc">Gasta 1 espaço de magia. Por 1 min/espaço: sente presença (sem localização) de Aberrações, Celestiais, Dragões, Elementais, Fadas, Infernos e Mortos-Vivos em até 1,6 km.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Espreitador das Sombras</div>
+        <div class="feature-desc">Sente-se confortável em lugares obscurecidos.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Visão Umbral</div>
+        <div class="feature-desc">Na escuridão, é invisível para criaturas que dependam de visão no escuro para enxergá-lo.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Visão no Escuro</div>
+        <div class="feature-desc">Vê normalmente em luz baixa até 18m. Na escuridão total, vê como se estivesse em luz baixa.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Estilo de Combate — Arquearia + Defensivo</div>
+        <div class="feature-desc">+2 para acertar com ataques a distância. +1 CA.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Explorador Natural — Floresta</div>
+        <div class="feature-desc">Terreno difícil não reduz deslocamento · Grupo nunca se perde · Sempre alerta, nunca surpreendido · Pode mover-se furtivamente sozinho sem custo · Acha o dobro de alimentos · Ao rastrear: sabe número exato, tamanho e tempo das criaturas.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Inimigo Favorito — Humanos & Goblins</div>
+        <div class="feature-desc">Vantagem em Sobrevivência para rastrear e Inteligência para lembrar informações sobre esses inimigos.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Assassinar</div>
+        <div class="feature-desc">Vantagem em ataques contra criaturas que ainda não agiram. Acertos contra alvos surpresos são críticos automáticos.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Ataque Furtivo</div>
+        <div class="feature-desc">+3d6 de dano ao ter vantagem na jogada de ataque.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Ação Ardilosa</div>
+        <div class="feature-desc">Ação bônus para: Disparada, Desengajar ou Esconder-se.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Precisão Élfica</div>
+        <div class="feature-desc">Com vantagem em ataque usando Des/Int/Sab/Car, pode rerolar um dos dados.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Esquiva Sobrenatural</div>
+        <div class="feature-desc">Usa reação para reduzir pela metade o dano recebido.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Surto de Ação</div>
+        <div class="feature-desc">Pode realizar uma ação extra. Recupera com descanso curto ou longo.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Recupera Fôlego</div>
+        <div class="feature-desc">Ação bônus: recupera PV = 1d10 + 2 (nível de guerreiro).</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Máscara da Natureza</div>
+        <div class="feature-desc">Pode tentar se esconder mesmo em leve obscuridade.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Transe (Elfo)</div>
+        <div class="feature-desc">Elfos não dormem — meditam por 4 horas.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Ancestralidade Faérica</div>
+        <div class="feature-desc">Vantagem em testes contra ser enfeitiçado. Não pode ser colocado para dormir magicamente.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Perfurador</div>
+        <div class="feature-desc">+1 Destreza · 1/turno pode rerolar um dado de dano · Acerto crítico rola 1dX adicional.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-name">Gíria dos Ladrões</div>
+        <div class="feature-desc">Conhece a linguagem secreta dos ladrões.</div>
+      </div>
+    </div>
+
+    <!-- ARCANE ARROWS -->
+    <div class="section">
+      <div class="section-title"><span class="s-icon">◆</span> Flecha Arcana (2 usos / descanso)</div>
+      <div class="arrow-item">
+        <div class="arrow-name">🏹 Flecha da Explosão</div>
+        <div class="arrow-desc">Infunde evocação. Após atingir, o alvo e todas as criaturas a 3m recebem 2d6 de dano de energia.</div>
+      </div>
+      <div class="arrow-item">
+        <div class="arrow-name">🏹 Flecha da Sedução</div>
+        <div class="arrow-desc">2d6 psíquico extra. Resistência de Sabedoria ou o alvo fica encantado por um aliado a 9m até seu próximo turno. Encanto cessa se o aliado atacar ou forçar resistência.</div>
+      </div>
+      <div class="arrow-item">
+        <div class="arrow-name">🏹 Flecha do Agarrar</div>
+        <div class="arrow-desc">2d6 venenoso extra. Deslocamento -3m. Mover 30cm+ causa 2d6 cortante. Espinhos duram 1 min (remoção: For/Atletismo CD Disparo Arcano).</div>
+      </div>
+      <div class="arrow-item">
+        <div class="arrow-name">🏹 Flecha do Banimento</div>
+        <div class="arrow-desc">Resistência de Carisma ou o alvo é banido para a Agrestia das Fadas (vel. 0, incapacitado) por 1 turno, reaparecendo no espaço original.</div>
+      </div>
+      <div class="arrow-item">
+        <div class="arrow-name">🏹 Flecha do Enfraquecimento</div>
+        <div class="arrow-desc">2d6 necrótico extra. Resistência de Constituição ou dano de armas do alvo é reduzido à metade até seu próximo turno.</div>
+      </div>
+      <div class="arrow-item">
+        <div class="arrow-name">🏹 Flecha Perfurante</div>
+        <div class="arrow-desc">Sem rolagem de ataque. Linha 9m × 30cm, ignora cobertura. Resistência de Destreza: falha = dano de flecha + 1d6 perfurante; sucesso = metade. Perfurante aumenta para 2d6 em nível maior.</div>
+      </div>
+      <div class="arrow-item">
+        <div class="arrow-name">🏹 Flecha Perseguidora</div>
+        <div class="arrow-desc">Sem rolagem de ataque. A flecha curva e ignora cobertura ¾ e meia cobertura. Resistência de Destreza: falha = dano + 1d6 força + revela localização; sucesso = metade, sem revelar.</div>
+      </div>
+      <div class="arrow-item">
+        <div class="arrow-name">🏹 Flecha Sombria</div>
+        <div class="arrow-desc">2d6 psíquico extra. Resistência de Sabedoria ou o alvo fica incapaz de ver além de 1,5m até o início do seu próximo turno.</div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-langs">
+      Idiomas: <span>Comum · Élfico · Infernal · Primordial · Ling. das Ruas</span>
+    </div>
+    <div class="footer-prof">
+      Armaduras: leve, média, escudos · Armas: espada longa/curta, arco curto/longo, armas simples, besta de mão, rapieira, armas marciais · Ferramentas: flauta, ferramentas de ladrão, kit de disfarce, kit de veneno
+    </div>
+  </div>
+
+</div><!-- /sheet-wrapper -->
+
+</body>
+</html>
