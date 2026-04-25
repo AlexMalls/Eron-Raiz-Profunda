@@ -16,41 +16,110 @@
 html{height:100%;}
 body{min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:14px;-webkit-tap-highlight-color:transparent;}
 
-/* ── EDIÇÃO POR DUPLO CLIQUE ── */
-.ed{cursor:default;border-radius:4px;transition:background .15s,box-shadow .15s;user-select:none;}
-.ed:hover{background:rgba(196,152,58,.08);outline:1px dashed rgba(196,152,58,.25);outline-offset:2px;}
-.ed.ativo{
-  cursor:text;background:rgba(196,152,58,.18);
-  box-shadow:0 0 0 1.5px var(--gold);outline:none;
-  user-select:text;
+/* ══════════════════════════════════════════
+   BARRA TOPO — engrenagem
+══════════════════════════════════════════ */
+.top-bar{
+  position:sticky;top:0;z-index:200;
+  display:flex;align-items:center;justify-content:flex-end;
+  padding:8px 16px;background:var(--bg);border-bottom:1px solid var(--border);
+  gap:10px;
 }
-/* tooltip de dica */
-.ed:hover::after{content:'duplo clique para editar';position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);
-  background:#0d1020;border:1px solid var(--border2);border-radius:4px;padding:3px 7px;
-  font-size:10px;color:var(--text3);white-space:nowrap;pointer-events:none;z-index:999;opacity:0;transition:opacity .2s;}
-.ed:hover::after{opacity:1;}
-.pos-rel{position:relative;}
+.edit-toggle{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface2);border:1px solid var(--border2);
+  border-radius:30px;padding:6px 14px 6px 10px;
+  cursor:pointer;transition:background .2s,border-color .2s;
+  user-select:none;
+}
+.edit-toggle:hover{background:var(--surface3);border-color:var(--gold);}
+.edit-toggle.on{background:rgba(196,152,58,.18);border-color:var(--gold);}
+.gear-ico{font-size:16px;transition:transform .4s;}
+.edit-toggle.on .gear-ico{transform:rotate(120deg);color:var(--gold);}
+.edit-toggle-lbl{font-size:12px;color:var(--text2);font-family:'Cinzel',serif;letter-spacing:.5px;}
+.edit-toggle.on .edit-toggle-lbl{color:var(--gold);}
 
-/* ── DOTS ── */
+/* banner amarelo no topo quando editando */
+.edit-banner{
+  display:none;align-items:center;justify-content:center;gap:8px;
+  background:rgba(196,152,58,.15);border-bottom:1px solid var(--gold);
+  padding:7px 16px;font-size:12px;color:var(--gold);font-family:'Cinzel',serif;letter-spacing:.5px;
+}
+.edit-banner.on{display:flex;}
+
+/* ══════════════════════════════════════════
+   CAMPOS EDITÁVEIS — comportamento por modo
+   .ed = campo editável
+   body.edit-mode .ed = ativo no modo edição
+══════════════════════════════════════════ */
+
+/* MODO VISUALIZAÇÃO — texto limpo, sem box */
+.ed{
+  cursor:default;
+  user-select:none;
+  outline:none;
+  border-radius:4px;
+}
+
+/* MODO EDIÇÃO — campos aparecem */
+body.edit-mode .ed{
+  cursor:text;
+  user-select:text;
+  background:var(--input-bg);
+  border:1px solid var(--border2);
+  border-radius:4px;
+  padding:2px 6px;
+  margin:-2px -6px;
+  transition:background .15s, box-shadow .15s, border-color .15s;
+}
+body.edit-mode .ed:hover{border-color:var(--text3);}
+body.edit-mode .ed:focus{
+  background:rgba(196,152,58,.15);
+  border-color:var(--gold);
+  box-shadow:0 0 0 2px rgba(196,152,58,.2);
+  outline:none;
+}
+
+/* Campos que são blocos (f-val, ci, etc.) mantêm display:block em edição */
+body.edit-mode .ed.f-val,
+body.edit-mode .ed.ci,
+body.edit-mode .ed.ci-dice,
+body.edit-mode .ed.ci-num{
+  display:block;
+  padding:7px 10px;
+  margin:0;
+  border-radius:6px;
+}
+
+/* Botões só aparecem no modo edição */
+.edit-only{display:none !important;}
+body.edit-mode .edit-only{display:flex !important;}
+.add-row{display:none !important;}
+body.edit-mode .add-row{display:block !important;}
+
+/* ══════════════════════════════════════════
+   DOTS — clicáveis sempre
+══════════════════════════════════════════ */
 .dot{
   width:16px;height:16px;border-radius:50%;
   background:var(--dot-off);border:1.5px solid var(--border2);
   flex-shrink:0;cursor:pointer;transition:background .18s,border-color .18s,transform .12s;
 }
-.dot:hover{transform:scale(1.2);}
+.dot:hover{transform:scale(1.15);}
 .dot.on{background:var(--green);border-color:var(--green);}
 
-/* Dots de uso (Flechas Arcanas) */
 .use-dot{
   width:14px;height:14px;border-radius:50%;
   background:var(--dot-off);border:1.5px solid var(--border2);
   display:inline-block;cursor:pointer;transition:background .18s,transform .12s;
   margin-left:4px;
 }
-.use-dot:hover{transform:scale(1.25);}
+.use-dot:hover{transform:scale(1.2);}
 .use-dot.on{background:var(--green);border-color:var(--green);}
 
-/* ── CARD ── */
+/* ══════════════════════════════════════════
+   CARD
+══════════════════════════════════════════ */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
 .sec-title{
   font-family:'Cinzel',serif;font-size:15px;font-weight:600;
@@ -59,19 +128,30 @@ body{min-height:100%;background:var(--bg);color:var(--text);font-family:system-u
   display:flex;align-items:center;justify-content:center;gap:8px;
 }
 
-/* ── GENERAL INFO ── */
+/* ══════════════════════════════════════════
+   GENERAL INFO
+══════════════════════════════════════════ */
 .gi-body{padding:14px 16px;}
 .f-lbl{font-size:11px;color:var(--text3);display:block;margin-bottom:5px;}
-.f-val{
-  display:block;background:var(--input-bg);border:1px solid var(--border);
-  border-radius:var(--rs);padding:7px 12px;color:var(--text);font-size:14px;width:100%;
-}
+
+/* visualização: texto limpo */
+.f-val{display:block;color:var(--text);font-size:14px;width:100%;padding:7px 0;}
 .f-val.big{font-size:20px;}
+
+/* em edição: box visível */
+body.edit-mode .f-val{
+  background:var(--input-bg);border:1px solid var(--border);
+  border-radius:var(--rs);padding:7px 12px;
+}
+body.edit-mode .f-val:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(196,152,58,.2);}
+
 .f-row{display:flex;gap:10px;}
 .f-row .fg{flex:1;}
 .fg{margin-bottom:10px;}
 
-/* ── CLASS TABLE ── */
+/* ══════════════════════════════════════════
+   CLASS TABLE
+══════════════════════════════════════════ */
 .cl-head{
   display:grid;grid-template-columns:1.8fr 1.2fr 1.1fr .7fr .7fr .45fr;
   gap:8px;padding:5px 14px 7px;font-size:11px;color:var(--text3);
@@ -80,36 +160,55 @@ body{min-height:100%;background:var(--bg);color:var(--text);font-family:system-u
   display:grid;grid-template-columns:1.8fr 1.2fr 1.1fr .7fr .7fr .45fr;
   gap:8px;padding:7px 14px;border-top:1px solid var(--border);align-items:center;
 }
-.ci{
+/* Modo visualização: sem box */
+.ci{color:var(--text);font-size:13px;display:block;padding:4px 0;}
+.ci-dice{font-size:12px;color:var(--text2);text-align:center;display:block;padding:4px 0;}
+.ci-num{font-size:14px;color:var(--text);text-align:center;display:block;padding:4px 0;}
+
+/* Modo edição: com box */
+body.edit-mode .ci{
   background:var(--input-bg);border:1px solid var(--border);
-  border-radius:6px;padding:5px 8px;color:var(--text);font-size:13px;display:block;
+  border-radius:6px;padding:5px 8px;
 }
-.ci-dice{
+body.edit-mode .ci-dice{
   background:var(--surface2);border:1px solid var(--border);
-  border-radius:6px;padding:4px 6px;font-size:12px;color:var(--text2);text-align:center;display:block;
+  border-radius:6px;padding:4px 6px;
 }
-.ci-num{font-size:14px;color:var(--text);text-align:center;display:block;}
+body.edit-mode .ci:focus,body.edit-mode .ci-dice:focus,body.edit-mode .ci-num:focus{
+  border-color:var(--gold);box-shadow:0 0 0 1.5px rgba(196,152,58,.25);outline:none;
+}
+
 .rm-btn{
   width:22px;height:22px;border-radius:50%;border:1.5px solid var(--red-x);
   background:none;cursor:pointer;color:var(--red-x);font-size:11px;
-  display:flex;align-items:center;justify-content:center;transition:background .15s;
+  align-items:center;justify-content:center;transition:background .15s;
 }
 .rm-btn:hover{background:rgba(136,68,68,.25);}
 .add-row{
-  padding:9px 14px;color:var(--text3);font-size:20px;cursor:pointer;
+  padding:9px 14px;color:var(--text3);font-size:14px;cursor:pointer;
   border-top:1px solid var(--border);text-align:left;
   transition:color .15s,background .15s;user-select:none;
 }
 .add-row:hover{color:var(--gold);background:rgba(196,152,58,.07);}
 
-/* ── STAT BOXES ── */
+/* ══════════════════════════════════════════
+   STAT BOXES
+══════════════════════════════════════════ */
 .stat-box{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:14px 8px 12px;text-align:center;gap:7px;
 }
-.stat-num{font-size:34px;color:var(--text);font-weight:400;line-height:1;}
+.stat-num{font-size:34px;color:var(--text);font-weight:400;line-height:1;display:block;}
 .stat-lbl{font-size:11px;color:var(--text2);}
+
+body.edit-mode .stat-num{
+  font-size:28px;
+  background:var(--input-bg);border:1px solid var(--border2);border-radius:6px;
+  padding:4px 10px;min-width:70px;text-align:center;
+}
+body.edit-mode .stat-num:focus{border-color:var(--gold);outline:none;}
+
 .inspo{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:10px;
@@ -120,6 +219,7 @@ body{min-height:100%;background:var(--bg);color:var(--text);font-family:system-u
 }
 .inspo-sq.on{background:rgba(126,196,104,.25);border-color:var(--green);}
 .inspo-lbl{font-size:11px;color:var(--text2);}
+
 .hd-box{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -127,20 +227,38 @@ body{min-height:100%;background:var(--bg);color:var(--text);font-family:system-u
 }
 .hd-total{font-size:13px;color:var(--text2);margin-bottom:4px;}
 .hd-total b{color:var(--text);font-weight:600;}
-.hd-num{font-size:30px;color:var(--text);line-height:1;}
+.hd-num{font-size:30px;color:var(--text);line-height:1;display:block;}
 .hd-lbl{font-size:11px;color:var(--text2);margin-top:3px;}
+
+body.edit-mode .hd-total b,
+body.edit-mode .hd-num{
+  background:var(--input-bg);border:1px solid var(--border2);border-radius:5px;
+  padding:2px 8px;
+}
+body.edit-mode .hd-total b:focus,
+body.edit-mode .hd-num:focus{border-color:var(--gold);outline:none;}
+
 .hp-box{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
-  padding:11px 12px 10px;position:relative;
+  padding:11px 12px 10px;
 }
-.hp-gear{position:absolute;top:9px;right:10px;color:var(--text3);font-size:13px;cursor:pointer;opacity:.7;}
 .hp-max-row{display:flex;align-items:baseline;gap:5px;margin-bottom:5px;}
 .hp-max-lbl{font-size:12px;color:var(--text2);}
 .hp-max-val{font-size:15px;font-weight:600;color:var(--text);}
-.hp-curr{font-size:30px;color:var(--text);text-align:center;line-height:1;}
+.hp-curr{font-size:30px;color:var(--text);text-align:center;line-height:1;display:block;}
 .hp-lbl{font-size:11px;color:var(--text2);text-align:center;margin-top:3px;}
 
-/* ── PILLS ── */
+body.edit-mode .hp-max-val,
+body.edit-mode .hp-curr{
+  background:var(--input-bg);border:1px solid var(--border2);border-radius:5px;
+  padding:2px 8px;
+}
+body.edit-mode .hp-max-val:focus,
+body.edit-mode .hp-curr:focus{border-color:var(--gold);outline:none;}
+
+/* ══════════════════════════════════════════
+   PILLS
+══════════════════════════════════════════ */
 .pill{
   background:var(--surface2);border:1px solid var(--border2);border-radius:40px;
   padding:8px 14px 8px 9px;display:flex;align-items:center;gap:10px;
@@ -153,19 +271,37 @@ body{min-height:100%;background:var(--bg);color:var(--text);font-family:system-u
 .pill-lbl{font-size:13px;color:var(--text2);flex:1;}
 .pill-icon{font-size:12px;color:var(--text3);}
 
-/* ── ATRIBUTOS ── */
+body.edit-mode .pill-n{
+  width:auto;min-width:34px;height:auto;min-height:34px;border-radius:8px;
+  padding:4px 8px;background:var(--input-bg);
+}
+body.edit-mode .pill-n:focus{border-color:var(--gold);outline:none;}
+
+/* ══════════════════════════════════════════
+   ATRIBUTOS
+══════════════════════════════════════════ */
 .attr-box{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
   display:flex;flex-direction:column;align-items:center;padding:12px 6px 10px;gap:4px;text-align:center;
 }
 .a-name{font-size:11px;color:var(--text2);}
-.a-score{font-size:30px;color:var(--text);font-weight:300;line-height:1.1;}
+.a-score{font-size:30px;color:var(--text);font-weight:300;line-height:1.1;display:block;}
 .a-mod{
   background:var(--surface2);border:1px solid var(--border);border-radius:20px;
-  padding:2px 12px;font-size:14px;color:var(--text);font-weight:500;
+  padding:2px 12px;font-size:14px;color:var(--text);font-weight:500;display:block;
 }
+body.edit-mode .a-score{
+  background:var(--input-bg);border:1px solid var(--border2);border-radius:6px;
+  padding:2px 8px;font-size:24px;
+}
+body.edit-mode .a-mod{
+  background:var(--input-bg);border:1px solid var(--border2);
+}
+body.edit-mode .a-score:focus,body.edit-mode .a-mod:focus{border-color:var(--gold);outline:none;}
 
-/* ── SAVES / SKILLS ── */
+/* ══════════════════════════════════════════
+   SAVES / SKILLS
+══════════════════════════════════════════ */
 .sv-row,.sk-row{
   display:flex;align-items:center;gap:10px;
   padding:7px 14px;border-bottom:1px solid rgba(45,50,84,.5);font-size:13px;
@@ -178,7 +314,19 @@ body{min-height:100%;background:var(--bg);color:var(--text);font-family:system-u
 .sk-attr{font-size:10px;color:var(--text3);margin-left:3px;}
 .sk-ico{font-size:10px;color:var(--text3);}
 
-/* ── ATAQUES ── */
+body.edit-mode .sv-val,body.edit-mode .sk-val{
+  background:var(--input-bg);border:1px solid var(--border2);border-radius:5px;padding:2px 6px;
+}
+body.edit-mode .sv-val:focus,body.edit-mode .sk-val:focus{border-color:var(--gold);outline:none;}
+body.edit-mode .sv-name,body.edit-mode .sk-name{
+  background:var(--input-bg);border:1px solid var(--border2);border-radius:5px;padding:2px 8px;
+  text-align:left;
+}
+body.edit-mode .sv-name:focus,body.edit-mode .sk-name:focus{border-color:var(--gold);outline:none;}
+
+/* ══════════════════════════════════════════
+   ATAQUES
+══════════════════════════════════════════ */
 .atk-hd{
   display:grid;grid-template-columns:2fr .8fr .9fr .6fr 2fr .3fr;
   gap:6px;padding:7px 14px;font-size:11px;color:var(--text3);border-bottom:1px solid var(--border);
@@ -193,15 +341,23 @@ body{min-height:100%;background:var(--bg);color:var(--text);font-family:system-u
   width:28px;height:28px;display:flex;align-items:center;justify-content:center;
   font-size:13px;font-weight:600;color:var(--text);
 }
+body.edit-mode .atk-bonus{border-radius:6px;width:auto;padding:2px 6px;background:var(--input-bg);}
+body.edit-mode .atk-bonus:focus{border-color:var(--gold);outline:none;}
+
 .atk-dmg{font-size:12px;color:var(--text2);}
 .atk-dmg .acc{color:var(--blue-acc);}
 
-/* ── DETAILS (habilidades / flechas) ── */
+body.edit-mode span.ed{
+  background:var(--input-bg);border:1px solid var(--border2);border-radius:5px;
+  padding:3px 7px;display:inline-block;
+}
+body.edit-mode span.ed:focus{border-color:var(--gold);outline:none;}
+
+/* ══════════════════════════════════════════
+   DETAILS (habilidades / flechas)
+══════════════════════════════════════════ */
 details{border-bottom:1px solid rgba(45,50,84,.5);}
 details:last-of-type{border-bottom:none;}
-.det-wrap{display:flex;align-items:center;}
-.det-wrap summary{flex:1;}
-.det-rm{flex-shrink:0;margin-right:10px;order:99;}
 summary{
   padding:10px 14px;cursor:pointer;list-style:none;
   display:flex;justify-content:space-between;align-items:center;
@@ -210,7 +366,7 @@ summary{
 }
 summary:hover{background:rgba(196,152,58,.05);}
 summary::-webkit-details-marker{display:none;}
-summary .sum-arrow{font-size:10px;color:var(--text3);transition:transform .2s;flex-shrink:0;margin-left:8px;}
+.sum-arrow{font-size:10px;color:var(--text3);transition:transform .2s;flex-shrink:0;margin-left:8px;}
 details[open] .sum-arrow{transform:rotate(180deg);}
 details[open] summary{color:var(--gold);border-left-color:var(--gold);}
 .det-bd{
@@ -221,7 +377,15 @@ details.gold summary{border-left-color:var(--gold);color:var(--gold);}
 details.gold .det-bd{border-left-color:rgba(196,152,58,.3);}
 .sum-inner{flex:1;display:flex;align-items:center;justify-content:space-between;}
 
-/* ── ITENS ── */
+body.edit-mode .det-bd.ed{
+  border:1px solid var(--border2);border-radius:6px;margin:4px 10px 10px;
+  background:var(--input-bg);padding:8px 12px;
+}
+body.edit-mode .det-bd.ed:focus{border-color:var(--gold);outline:none;}
+
+/* ══════════════════════════════════════════
+   ITENS
+══════════════════════════════════════════ */
 .item-row{
   display:flex;justify-content:space-between;align-items:center;
   padding:8px 14px;border-bottom:1px solid rgba(45,50,84,.5);font-size:13px;color:var(--text2);
@@ -237,22 +401,17 @@ details.gold .det-bd{border-left-color:rgba(196,152,58,.3);}
 .m-val{font-size:16px;font-weight:600;color:var(--text);}
 .m-lbl{font-size:10px;color:var(--text3);margin-left:2px;}
 
-/* ── LAYOUT ── */
+/* ══════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════ */
 .page{max-width:1440px;margin:0 auto;padding:16px 16px 48px;}
-.top-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-.left-col{display:flex;flex-direction:column;gap:12px;}
-.r-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  grid-template-rows:auto auto auto auto;gap:10px;align-content:start;
-}
-.r-span2{grid-column:span 2;}
-.attrs-bar{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:12px;}
-.mid-grid{display:grid;grid-template-columns:1fr 1fr 1.6fr;gap:12px;margin-bottom:12px;}
-.bot-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+/* Os containers agora são todos .drag-row (grid de 6 colunas) */
 
-/* ── MOBILE TABS ── */
+/* ══════════════════════════════════════════
+   MOBILE TABS
+══════════════════════════════════════════ */
 .mob-tabs{
-  display:none;position:sticky;top:0;z-index:100;
+  display:none;position:sticky;top:49px;z-index:100;
   background:var(--surface);border-bottom:1px solid var(--border);
   overflow-x:auto;scrollbar-width:none;
 }
@@ -270,31 +429,260 @@ details.gold .det-bd{border-left-color:rgba(196,152,58,.3);}
 
 @media(max-width:900px){
   .mob-tabs{display:flex;}
-  .top-grid{grid-template-columns:1fr;}
-  .attrs-bar{grid-template-columns:repeat(3,1fr);}
-  .mid-grid{grid-template-columns:1fr;}
-  .bot-grid{grid-template-columns:1fr;}
-  .r-grid{grid-template-columns:repeat(3,1fr);}
+  .drag-row{
+    grid-template-columns:repeat(3, 1fr);
+    grid-auto-rows:auto;
+  }
+  /* Em mobile, cards preenchem a largura quando span > 3 */
+  .draggable.span-w-4, .draggable.span-w-5, .draggable.span-w-6,
+  .card.span-w-4, .card.span-w-5, .card.span-w-6{ grid-column:span 3; }
+  .draggable.span-h-1, .draggable.span-h-2, .draggable.span-h-3, .draggable.span-h-4,
+  .card.span-h-1, .card.span-h-2, .card.span-h-3, .card.span-h-4,
+  .card.span-h-5, .card.span-h-6, .card.span-h-7, .card.span-h-8{ grid-row:auto; }
+  /* Resize handles escondidos no mobile */
+  .resize-handle{ display:none !important; }
+
   [data-s]{display:none!important;}
-  [data-s].vis{display:block!important;}
-  .attrs-bar[data-s].vis{display:grid!important;}
-  .left-col[data-s].vis{display:flex!important;}
-  .r-grid[data-s].vis{display:grid!important;}
-  .mid-grid[data-s].vis{display:grid!important;}
-  .bot-grid[data-s].vis{display:grid!important;}
+  [data-s].vis{display:grid!important;}
+  .drag-row[data-s].vis{display:grid!important;}
 }
 @media(max-width:500px){
-  .attrs-bar{grid-template-columns:repeat(2,1fr);}
-  .r-grid{grid-template-columns:1fr 1fr;}
+  .drag-row{ grid-template-columns:repeat(2, 1fr); }
+  .draggable.span-w-3, .draggable.span-w-4, .draggable.span-w-5, .draggable.span-w-6,
+  .card.span-w-3, .card.span-w-4, .card.span-w-5, .card.span-w-6{ grid-column:span 2; }
   .atk-hd,.atk-row{grid-template-columns:2fr .8fr .5fr 1.8fr .3fr;}
   .atk-hd>*:nth-child(3),.atk-row>*:nth-child(3){display:none;}
   .cl-head,.cl-row{grid-template-columns:1.5fr 1fr .9fr .55fr;}
   .cl-head>*:nth-child(3),.cl-row>*:nth-child(3){display:none;}
 }
+
+/* ══════════════════════════════════════════
+   DRAG AND DROP
+══════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   DRAG AND DROP — CARDS INDIVIDUAIS
+   Regra crítica: top/bottom SEMPRE criam nova linha
+══════════════════════════════════════════ */
+
+/* Handle dentro do sec-title */
+.sec-title .drag-handle{
+  display:none;
+  align-items:center;justify-content:center;
+  cursor:grab;
+  color:var(--text3);font-size:16px;line-height:1;
+  margin-right:8px;
+  flex-shrink:0;
+  transition:color .15s;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+.sec-title .drag-handle:hover{ color:var(--gold); }
+.sec-title .drag-handle:active{ cursor:grabbing; }
+body.edit-mode .sec-title .drag-handle{ display:flex; }
+
+/* Handle flutuante para cards sem sec-title (como equip) */
+.card .card-float-handle{
+  display:none;
+  position:absolute;top:8px;right:8px;
+  width:22px;height:22px;
+  align-items:center;justify-content:center;
+  cursor:grab;z-index:5;
+  color:var(--text3);font-size:14px;
+  border-radius:4px;
+  background:rgba(0,0,0,.35);
+  transition:color .15s, background .15s;
+  user-select:none;
+  margin-right:0;
+}
+.card .card-float-handle:hover{ color:var(--gold); background:rgba(196,152,58,.2); }
+body.edit-mode .card .card-float-handle{ display:flex; }
+
+/* Handle flutuante para cards sem sec-title */
+.stat-box .drag-handle, .pill .drag-handle,
+.attr-box .drag-handle, .inspo .drag-handle,
+.hd-box .drag-handle, .hp-box .drag-handle {
+  display:none;
+  position:absolute;top:5px;right:5px;
+  width:18px;height:18px;
+  align-items:center;justify-content:center;
+  cursor:grab;z-index:5;
+  color:var(--text3);font-size:13px;
+  border-radius:3px;
+  background:rgba(0,0,0,.3);
+  transition:color .15s, background .15s;
+  user-select:none;
+}
+.stat-box .drag-handle:hover,.pill .drag-handle:hover,
+.attr-box .drag-handle:hover,.inspo .drag-handle:hover,
+.hd-box .drag-handle:hover,.hp-box .drag-handle:hover {
+  color:var(--gold);background:rgba(196,152,58,.2);
+}
+body.edit-mode .stat-box .drag-handle,
+body.edit-mode .pill .drag-handle,
+body.edit-mode .attr-box .drag-handle,
+body.edit-mode .inspo .drag-handle,
+body.edit-mode .hd-box .drag-handle,
+body.edit-mode .hp-box .drag-handle { display:flex; }
+
+.draggable{ position:relative; }
+
+/* Cards dentro do grid preenchem toda a célula */
+.drag-row > .draggable{
+  width:100%;
+  min-width:0;
+  min-height:0;
+}
+/* Stat boxes, pills e attr boxes esticam para preencher altura */
+.drag-row > .stat-box,
+.drag-row > .pill,
+.drag-row > .attr-box,
+.drag-row > .inspo,
+.drag-row > .hd-box,
+.drag-row > .hp-box{ height:100%; }
+
+/* Cards grandes também */
+.drag-row > .card{ height:100%; display:flex; flex-direction:column; }
+.drag-row > .card > *:last-child:not(.drag-handle):not(.resize-handle){ flex:1; overflow:auto; }
+.drag-row > .card .sec-title{ flex-shrink:0; }
+
+/* ══════════════════════════════════════════
+   GRID DE 6 COLUNAS — sistema de blocos
+   A unidade base (1 bloco) = 1/6 da largura
+   Cards podem ocupar 1–6 colunas e 1–4 linhas
+══════════════════════════════════════════ */
+.drag-row{
+  display:grid;
+  grid-template-columns:repeat(6, 1fr);
+  grid-auto-rows:50px;           /* altura base de 1 bloco (~30% menor) */
+  gap:10px;
+  margin-bottom:12px;
+  width:100%;
+}
+
+/* Spans horizontais (1–6 colunas) */
+.draggable.span-w-1{ grid-column:span 1; }
+.draggable.span-w-2{ grid-column:span 2; }
+.draggable.span-w-3{ grid-column:span 3; }
+.draggable.span-w-4{ grid-column:span 4; }
+.draggable.span-w-5{ grid-column:span 5; }
+.draggable.span-w-6{ grid-column:span 6; }
+
+/* Spans verticais (1–4 linhas) */
+.draggable.span-h-1{ grid-row:span 1; }
+.draggable.span-h-2{ grid-row:span 2; }
+.draggable.span-h-3{ grid-row:span 3; }
+.draggable.span-h-4{ grid-row:span 4; }
+
+/* Cards grandes que não são pills/stats — span padrão maior */
+.drag-row > .card{ grid-column:span 6; grid-row:span 4; }
+.drag-row > .card.span-w-1{ grid-column:span 1; }
+.drag-row > .card.span-w-2{ grid-column:span 2; }
+.drag-row > .card.span-w-3{ grid-column:span 3; }
+.drag-row > .card.span-w-4{ grid-column:span 4; }
+.drag-row > .card.span-w-5{ grid-column:span 5; }
+.drag-row > .card.span-w-6{ grid-column:span 6; }
+.drag-row > .card.span-h-1{ grid-row:span 1; }
+.drag-row > .card.span-h-2{ grid-row:span 2; }
+.drag-row > .card.span-h-3{ grid-row:span 3; }
+.drag-row > .card.span-h-4{ grid-row:span 4; }
+.drag-row > .card.span-h-5{ grid-row:span 5; }
+.drag-row > .card.span-h-6{ grid-row:span 6; }
+.drag-row > .card.span-h-7{ grid-row:span 7; }
+.drag-row > .card.span-h-8{ grid-row:span 8; }
+.draggable.span-h-9{ grid-row:span 9; }
+.draggable.span-h-10{ grid-row:span 10; }
+.draggable.span-h-11{ grid-row:span 11; }
+.draggable.span-h-12{ grid-row:span 12; }
+.drag-row > .card.span-h-9{ grid-row:span 9; }
+.drag-row > .card.span-h-10{ grid-row:span 10; }
+.drag-row > .card.span-h-11{ grid-row:span 11; }
+.drag-row > .card.span-h-12{ grid-row:span 12; }
+
+/* ══════════════════════════════════════════
+   HANDLES DE RESIZE — aparecem em modo edição
+══════════════════════════════════════════ */
+.resize-handle{
+  display:none;
+  position:absolute;
+  z-index:6;
+  background:rgba(196,152,58,.18);
+  border:1px solid rgba(196,152,58,.5);
+  transition:background .15s, transform .12s;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.resize-handle:hover{ background:rgba(196,152,58,.4); transform:scale(1.15); }
+
+.resize-handle.rh-right{
+  right:-4px;top:50%;transform:translateY(-50%);
+  width:8px;height:30px;border-radius:4px;
+  cursor:ew-resize;
+}
+.resize-handle.rh-right:hover{ transform:translateY(-50%) scale(1.15); }
+.resize-handle.rh-bottom{
+  bottom:-4px;left:50%;transform:translateX(-50%);
+  width:30px;height:8px;border-radius:4px;
+  cursor:ns-resize;
+}
+.resize-handle.rh-bottom:hover{ transform:translateX(-50%) scale(1.15); }
+.resize-handle.rh-corner{
+  right:-4px;bottom:-4px;
+  width:14px;height:14px;
+  border-radius:3px;
+  cursor:nwse-resize;
+}
+
+body.edit-mode .resize-handle{ display:block; }
+
+/* Feedback visual durante resize */
+.resizing{
+  box-shadow:0 0 0 2px var(--gold), 0 8px 24px rgba(0,0,0,.5) !important;
+  transition:none !important;
+}
+.resize-preview{
+  position:fixed;
+  background:rgba(196,152,58,.08);
+  border:2px dashed var(--gold);
+  border-radius:var(--r);
+  pointer-events:none;
+  z-index:2999;
+  transition:all .12s ease;
+}
+
+body.dragging-active .draggable{
+  transition:transform .22s cubic-bezier(.25,.46,.45,.94);
+}
+body.dragging-active .drag-row{
+  transition:transform .22s cubic-bezier(.25,.46,.45,.94);
+}
 </style>
 </head>
 <body>
 
+<!-- BARRA TOPO -->
+<div class="top-bar">
+  <div class="edit-toggle" id="edit-toggle" onclick="toggleModoEdicao()">
+    <span class="gear-ico">⚙</span>
+    <span class="edit-toggle-lbl" id="edit-lbl">Editar Ficha</span>
+  </div>
+</div>
+
+<!-- BANNER DE EDIÇÃO -->
+<div class="edit-banner" id="edit-banner">
+  ✏️ &nbsp; MODO DE EDIÇÃO ATIVO — Clique em qualquer campo para editar
+  <button onclick="resetLayout()" style="
+    margin-left:18px;padding:4px 14px;
+    background:rgba(136,68,68,.25);border:1px solid #884444;
+    border-radius:20px;color:#e4a0a0;font-family:'Cinzel',serif;
+    font-size:11px;letter-spacing:.5px;cursor:pointer;
+    transition:background .2s,border-color .2s;
+  " onmouseover="this.style.background='rgba(136,68,68,.45)'"
+     onmouseout="this.style.background='rgba(136,68,68,.25)'">
+    ↺ Resetar Layout
+  </button>
+</div>
+
+<!-- MOBILE TABS -->
 <nav class="mob-tabs" id="tabs">
   <button class="mob-btn active" onclick="go('geral',this)"><span class="ico">⚄</span>Geral</button>
   <button class="mob-btn" onclick="go('attrs',this)"><span class="ico">💪</span>Atrib.</button>
@@ -306,107 +694,96 @@ details.gold .det-bd{border-left-color:rgba(196,152,58,.3);}
 </nav>
 
 <div class="page">
+  <div class="drag-row" data-s="geral" id="s-geral">
 
-  <!-- ══ TOPO: Info Geral + Classe | Stats ══ -->
-  <div class="top-grid">
-    <div class="left-col" data-s="geral" id="s-geral">
-
-      <div class="card">
-        <div class="sec-title">Informações Gerais</div>
-        <div class="gi-body">
-          <div class="fg">
-            <span class="f-lbl">Nome do Personagem</span>
-            <span class="f-val big ed pos-rel" id="nome">Eron Raiz-Profunda</span>
-          </div>
-          <div class="f-row">
-            <div class="fg"><span class="f-lbl">Raça</span><span class="f-val ed pos-rel" id="raca">Elfo</span></div>
-            <div class="fg"><span class="f-lbl">EXP</span><span class="f-val ed pos-rel" id="exp">0</span></div>
-            <div class="fg"><span class="f-lbl">Nível Total</span><span class="f-val ed pos-rel" id="nivel">14</span></div>
-          </div>
+    <div class="card draggable span-w-3 span-h-4" data-drag-id="info-geral">
+      <div class="sec-title"><span class="drag-handle" title="Segurar para arrastar">⠿</span>Informações Gerais</div>
+      <div class="gi-body">
+        <div class="fg">
+          <span class="f-lbl">Nome do Personagem</span>
+          <span class="f-val big ed" id="nome" contenteditable="false">Eron Raiz-Profunda</span>
+        </div>
+        <div class="f-row">
+          <div class="fg"><span class="f-lbl">Raça</span><span class="f-val ed" id="raca" contenteditable="false">Elfo</span></div>
+          <div class="fg"><span class="f-lbl">EXP</span><span class="f-val ed" id="exp" contenteditable="false">0</span></div>
+          <div class="fg"><span class="f-lbl">Nível Total</span><span class="f-val ed" id="nivel" contenteditable="false">14</span></div>
         </div>
       </div>
-
-      <div class="card">
-        <div class="sec-title">Informações de Classe</div>
-        <div class="cl-head"><span>Classe</span><span>Subclasse</span><span>Dado de Vida</span><span>Total</span><span>Atual</span><span></span></div>
-        <div id="classes-list"></div>
-        <div class="add-row" onclick="addClasse()">＋ Adicionar Classe</div>
-      </div>
-
     </div>
 
-    <div class="r-grid" data-s="geral">
-      <div class="stat-box"><span class="stat-num ed pos-rel" id="ca">17</span><span class="stat-lbl">Classe de Armadura</span></div>
-      <div class="stat-box"><span class="stat-num ed pos-rel" id="inic">+4</span><span class="stat-lbl">Iniciativa</span></div>
-      <div class="stat-box"><span class="stat-num ed pos-rel" id="vel">12m</span><span class="stat-lbl">Velocidade</span></div>
-
-      <div class="inspo">
-        <div class="inspo-sq" id="inspo-sq" onclick="toggleInspo()"></div>
-        <div class="inspo-lbl">Inspiração</div>
-      </div>
-      <div class="hd-box">
-        <div class="hd-total">Total <b class="ed pos-rel" id="hd-total">14d10</b></div>
-        <div class="hd-num ed pos-rel" id="hd-atual">14</div>
-        <div class="hd-lbl">Dados de Vida</div>
-      </div>
-      <div class="hp-box">
-        <span class="hp-gear">⚙</span>
-        <div class="hp-max-row"><span class="hp-max-lbl">Máx</span><span class="hp-max-val ed pos-rel" id="hp-max">109</span></div>
-        <div class="hp-curr ed pos-rel" id="hp-curr">109</div>
-        <div class="hp-lbl">Pontos de Vida</div>
-      </div>
-
-      <div class="pill r-span2"><span class="pill-n ed pos-rel" id="prof">+5</span><span class="pill-lbl">Bônus de Proficiência</span></div>
-      <div class="pill"><span class="pill-n ed pos-rel" id="spell-dc">—</span><span class="pill-lbl">CD de Resistência</span></div>
-
-      <div class="pill r-span2"><span class="pill-n ed pos-rel" id="perc-passiva">17</span><span class="pill-icon">⚙</span><span class="pill-lbl">Percepção Passiva (Sab)</span></div>
-      <div class="pill"><span class="pill-n ed pos-rel" id="atk-bonus">+13</span><span class="pill-lbl">Melhor Bônus de Ataque</span></div>
+    <div class="card draggable span-w-3 span-h-4" data-drag-id="info-classe">
+      <div class="sec-title"><span class="drag-handle" title="Segurar para arrastar">⠿</span>Informações de Classe</div>
+      <div class="cl-head"><span>Classe</span><span>Subclasse</span><span>Dado de Vida</span><span>Total</span><span>Atual</span><span></span></div>
+      <div id="classes-list"></div>
+      <div class="add-row" onclick="addClasse()">＋ Adicionar Classe</div>
     </div>
+  </div><!-- /top-grid -->
+
+  <div class="drag-row" data-s="geral">
+    <div class="stat-box draggable span-w-1 span-h-2" data-drag-id="stat-ca"><span class="drag-handle" title="Arrastar">⠿</span><span class="stat-num ed" id="ca" contenteditable="false">17</span><span class="stat-lbl">Classe de Armadura</span></div>
+    <div class="stat-box draggable span-w-1 span-h-2" data-drag-id="stat-inic"><span class="drag-handle" title="Arrastar">⠿</span><span class="stat-num ed" id="inic" contenteditable="false">+4</span><span class="stat-lbl">Iniciativa</span></div>
+    <div class="stat-box draggable span-w-1 span-h-2" data-drag-id="stat-vel"><span class="drag-handle" title="Arrastar">⠿</span><span class="stat-num ed" id="vel" contenteditable="false">12m</span><span class="stat-lbl">Velocidade</span></div>
+    <div class="inspo draggable span-w-1 span-h-2" data-drag-id="stat-inspo"><span class="drag-handle" title="Arrastar">⠿</span>
+      <div class="inspo-sq" id="inspo-sq" onclick="toggleInspo()"></div>
+      <div class="inspo-lbl">Inspiração</div>
+    </div>
+    <div class="hd-box draggable span-w-1 span-h-2" data-drag-id="stat-hd"><span class="drag-handle" title="Arrastar">⠿</span>
+      <div class="hd-total">Total <b class="ed" id="hd-total" contenteditable="false">14d10</b></div>
+      <div class="hd-num ed" id="hd-atual" contenteditable="false">14</div>
+      <div class="hd-lbl">Dados de Vida</div>
+    </div>
+    <div class="hp-box draggable span-w-1 span-h-2" data-drag-id="stat-hp"><span class="drag-handle" title="Arrastar">⠿</span>
+      <div class="hp-max-row"><span class="hp-max-lbl">Máx</span><span class="hp-max-val ed" id="hp-max" contenteditable="false">109</span></div>
+      <div class="hp-curr ed" id="hp-curr" contenteditable="false">109</div>
+      <div class="hp-lbl">Pontos de Vida</div>
+    </div>
+  </div><!-- /stats-bar -->
+
+  <div class="drag-row" data-s="geral">
+    <div class="pill draggable span-w-2 span-h-1" data-drag-id="pill-perc"><span class="drag-handle" title="Arrastar">⠿</span><span class="pill-n ed" id="perc-passiva" contenteditable="false">17</span><span class="pill-icon">⚙</span><span class="pill-lbl">Percepção Passiva (Sab)</span></div>
+    <div class="pill draggable span-w-2 span-h-1" data-drag-id="pill-atk"><span class="drag-handle" title="Arrastar">⠿</span><span class="pill-n ed" id="atk-bonus" contenteditable="false">+13</span><span class="pill-lbl">Melhor Bônus de Ataque</span></div>
+    <div class="pill draggable span-w-1 span-h-1" data-drag-id="pill-prof"><span class="drag-handle" title="Arrastar">⠿</span><span class="pill-n ed" id="prof" contenteditable="false">+5</span><span class="pill-lbl">Bônus de Proficiência</span></div>
+    <div class="pill draggable span-w-1 span-h-1" data-drag-id="pill-dc"><span class="drag-handle" title="Arrastar">⠿</span><span class="pill-n ed" id="spell-dc" contenteditable="false">—</span><span class="pill-lbl">CD de Resistência</span></div>
   </div>
-
-  <!-- ══ ATRIBUTOS ══ -->
-  <div class="attrs-bar" data-s="attrs" id="s-attrs">
-    <div class="attr-box"><span class="a-name">Força</span><span class="a-score ed pos-rel" id="str-score">8</span><span class="a-mod ed pos-rel" id="str-mod">-1</span></div>
-    <div class="attr-box"><span class="a-name">Destreza</span><span class="a-score ed pos-rel" id="dex-score">19</span><span class="a-mod ed pos-rel" id="dex-mod">+4</span></div>
-    <div class="attr-box"><span class="a-name">Constituição</span><span class="a-score ed pos-rel" id="con-score">14</span><span class="a-mod ed pos-rel" id="con-mod">+2</span></div>
-    <div class="attr-box"><span class="a-name">Inteligência</span><span class="a-score ed pos-rel" id="int-score">10</span><span class="a-mod ed pos-rel" id="int-mod">0</span></div>
-    <div class="attr-box"><span class="a-name">Sabedoria</span><span class="a-score ed pos-rel" id="wis-score">14</span><span class="a-mod ed pos-rel" id="wis-mod">+2</span></div>
-    <div class="attr-box"><span class="a-name">Carisma</span><span class="a-score ed pos-rel" id="cha-score">12</span><span class="a-mod ed pos-rel" id="cha-mod">+1</span></div>
+  <div class="drag-row" data-s="attrs" id="s-attrs">
+    <div class="attr-box draggable span-w-1 span-h-2" data-drag-id="attr-str"><span class="drag-handle" title="Arrastar">⠿</span><span class="a-name">Força</span><span class="a-score ed" id="str-score" contenteditable="false">8</span><span class="a-mod ed" id="str-mod" contenteditable="false">-1</span></div>
+    <div class="attr-box draggable span-w-1 span-h-2" data-drag-id="attr-dex"><span class="drag-handle" title="Arrastar">⠿</span><span class="a-name">Destreza</span><span class="a-score ed" id="dex-score" contenteditable="false">19</span><span class="a-mod ed" id="dex-mod" contenteditable="false">+4</span></div>
+    <div class="attr-box draggable span-w-1 span-h-2" data-drag-id="attr-con"><span class="drag-handle" title="Arrastar">⠿</span><span class="a-name">Constituição</span><span class="a-score ed" id="con-score" contenteditable="false">14</span><span class="a-mod ed" id="con-mod" contenteditable="false">+2</span></div>
+    <div class="attr-box draggable span-w-1 span-h-2" data-drag-id="attr-int"><span class="drag-handle" title="Arrastar">⠿</span><span class="a-name">Inteligência</span><span class="a-score ed" id="int-score" contenteditable="false">10</span><span class="a-mod ed" id="int-mod" contenteditable="false">0</span></div>
+    <div class="attr-box draggable span-w-1 span-h-2" data-drag-id="attr-wis"><span class="drag-handle" title="Arrastar">⠿</span><span class="a-name">Sabedoria</span><span class="a-score ed" id="wis-score" contenteditable="false">14</span><span class="a-mod ed" id="wis-mod" contenteditable="false">+2</span></div>
+    <div class="attr-box draggable span-w-1 span-h-2" data-drag-id="attr-cha"><span class="drag-handle" title="Arrastar">⠿</span><span class="a-name">Carisma</span><span class="a-score ed" id="cha-score" contenteditable="false">12</span><span class="a-mod ed" id="cha-mod" contenteditable="false">+1</span></div>
   </div>
+  <div class="drag-row">
 
-  <!-- ══ MEIO: Resistências / Perícias / Ataques ══ -->
-  <div class="mid-grid">
-
-    <div class="card" data-s="saves" id="s-saves">
-      <div class="sec-title">Resistências</div>
+    <div class="card draggable span-w-2 span-h-5" data-drag-id="s-saves" data-s="saves" id="s-saves">
+      <div class="sec-title"><span class="drag-handle" title="Segurar para arrastar">⠿</span>Resistências</div>
       <div id="saves-list"></div>
     </div>
 
-    <div class="card" data-s="skills" id="s-skills">
-      <div class="sec-title">Perícias</div>
+    <div class="card draggable span-w-2 span-h-10" data-drag-id="s-skills" data-s="skills" id="s-skills">
+      <div class="sec-title"><span class="drag-handle" title="Segurar para arrastar">⠿</span>Perícias</div>
       <div id="skills-list"></div>
     </div>
 
-    <div class="card" data-s="combat" id="s-combat">
-      <div class="sec-title">Ataques e Magias</div>
+    <div class="card draggable span-w-2 span-h-5" data-drag-id="s-combat" data-s="combat" id="s-combat">
+      <div class="sec-title"><span class="drag-handle" title="Segurar para arrastar">⠿</span>Ataques e Magias</div>
       <div class="atk-hd"><span>Nome</span><span>Alcance</span><span>Duração</span><span>Bônus</span><span>Dano/Tipo</span><span></span></div>
       <div id="attacks-list"></div>
       <div class="add-row" onclick="addAtaque()">＋ Adicionar Ataque</div>
     </div>
 
-  </div>
+  </div><!-- /mid-grid -->
 
-  <!-- ══ BASE: Habilidades / Flechas Arcanas / Equipamento ══ -->
-  <div class="bot-grid">
+  <div class="drag-row">
 
-    <div class="card" data-s="feats" id="s-feats">
-      <div class="sec-title">Habilidades de Classe e Raça</div>
+    <div class="card draggable span-w-2 span-h-12" data-drag-id="s-feats" data-s="feats" id="s-feats">
+      <div class="sec-title"><span class="drag-handle" title="Segurar para arrastar">⠿</span>Habilidades de Classe e Raça</div>
       <div id="feats-list"></div>
       <div class="add-row" onclick="addHabilidade()">＋ Adicionar Habilidade</div>
     </div>
 
-    <div class="card">
-      <div class="sec-title">
+    <div class="card draggable span-w-2 span-h-7" data-drag-id="arrows">
+      <div class="sec-title"><span class="drag-handle" title="Segurar para arrastar">⠿</span>
         Flechas Arcanas
         <div id="arrow-uses-dots" style="display:flex;gap:4px;align-items:center;"></div>
       </div>
@@ -414,24 +791,64 @@ details.gold .det-bd{border-left-color:rgba(196,152,58,.3);}
       <div class="add-row" onclick="addFlecha()">＋ Adicionar Flecha</div>
     </div>
 
-    <div class="card" data-s="equip" id="s-equip">
+    <div class="card draggable span-w-2 span-h-9" data-drag-id="s-equip" data-s="equip" id="s-equip">
+      <span class="drag-handle card-float-handle" title="Segurar para arrastar">⠿</span>
       <div class="money-bar">
-        <div><span class="m-val ed pos-rel" id="gp">429</span><span class="m-lbl">PO</span></div>
-        <div><span class="m-val ed pos-rel" id="sp">4</span><span class="m-lbl">PP</span></div>
-        <div><span class="m-val ed pos-rel" id="cp">9</span><span class="m-lbl">PC</span></div>
-        <div style="margin-left:auto;font-size:11px;color:var(--text3)">Peso: <span class="ed pos-rel" id="peso">3/120</span></div>
+        <div><span class="m-val ed" id="gp" contenteditable="false">429</span><span class="m-lbl">PO</span></div>
+        <div><span class="m-val ed" id="sp" contenteditable="false">4</span><span class="m-lbl">PP</span></div>
+        <div><span class="m-val ed" id="cp" contenteditable="false">9</span><span class="m-lbl">PC</span></div>
+        <div style="margin-left:auto;font-size:11px;color:var(--text3)">Peso: <span class="ed" id="peso" contenteditable="false">3/120</span></div>
       </div>
       <div id="items-list"></div>
       <div class="add-row" onclick="addItem()">＋ Adicionar Item</div>
     </div>
 
-  </div>
-</div>
+  </div><!-- /bot-grid -->
+
+</div><!-- /page -->
 
 <script>
-/* ═══════════════════════════════════════════════════════
-   DADOS INICIAIS
-═══════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   MODO DE EDIÇÃO
+══════════════════════════════════════════ */
+let modoEdicao = false;
+
+function toggleModoEdicao(){
+  modoEdicao = !modoEdicao;
+  document.body.classList.toggle('edit-mode', modoEdicao);
+
+  const toggle = document.getElementById('edit-toggle');
+  const lbl    = document.getElementById('edit-lbl');
+  const banner = document.getElementById('edit-banner');
+
+  toggle.classList.toggle('on', modoEdicao);
+  banner.classList.toggle('on', modoEdicao);
+  lbl.textContent = modoEdicao ? 'Salvar e Fechar' : 'Editar Ficha';
+
+  // Ativar/desativar contenteditable em todos os campos .ed
+  document.querySelectorAll('.ed').forEach(el=>{
+    el.contentEditable = modoEdicao ? 'true' : 'false';
+  });
+
+  if(!modoEdicao){
+    // Ao fechar: salvar todos os campos estáticos (por id)
+    document.querySelectorAll('.ed[id]').forEach(el => salvarCampoId(el));
+  } else {
+    // Ao abrir modo de edição: inicializa drag nas seções
+    setTimeout(()=>{
+      document.querySelectorAll('.draggable[data-dd-ready]').forEach(s=>delete s.dataset.ddReady);
+      document.querySelectorAll('.draggable[data-rh-ready]').forEach(s=>delete s.dataset.rhReady);
+      // Remove handles antigos (serão recriados)
+      document.querySelectorAll('.resize-handle').forEach(h=>h.remove());
+      initDragHandlers();
+      addResizeHandles();
+    }, 50);
+  }
+}
+
+/* ══════════════════════════════════════════
+   DADOS E ESTADO
+══════════════════════════════════════════ */
 const DEF = {
   classes:[
     {nome:'Ranger',sub:'Arqueiro Arcano',dado:'D10',total:7,atual:7},
@@ -457,17 +874,17 @@ const DEF = {
   ],
   habilidades:[
     {nome:'Sorte',desc:'3 dados/dia. Vantagem em qualquer teste OU desvantagem em ataque inimigo.'},
-    {nome:'Emboscador Aterrador',desc:'1º turno: +3m deslocamento. Se atacar, faz ataque adicional; se acertar, causa 1d8 extra.'},
-    {nome:'Consciência Primordial',desc:'1 espaço de magia → detecta Aberrações, Celestiais, Dragões, Elementais, Fadas, Infernos e Mortos-Vivos em 1,6km por 1 min/espaço.'},
-    {nome:'Visão Umbral',desc:'Na escuridão, é invisível para criaturas com visão no escuro.'},
+    {nome:'Emboscador Aterrador',desc:'1º turno: +3m. Ataque adicional; se acertar, +1d8.'},
+    {nome:'Consciência Primordial',desc:'1 espaço de magia → detecta Aberrações, Celestiais, Dragões, Elementais, Fadas, Infernos e Mortos-Vivos em 1,6km.'},
+    {nome:'Visão Umbral',desc:'Na escuridão, invisível para criaturas com visão no escuro.'},
     {nome:'Visão no Escuro',desc:'Vê em luz baixa até 18m. Na escuridão total → como em luz baixa.'},
     {nome:'Estilo de Combate — Arquearia + Defensivo',desc:'+2 para acertar a distância. +1 CA.'},
-    {nome:'Explorador Natural — Floresta',desc:'Terreno difícil não reduz vel. · Nunca se perde · Sempre alerta · Furtivo sem custo · 2× alimentos · Rastrear: número, tamanho e tempo exatos.'},
+    {nome:'Explorador Natural — Floresta',desc:'Terreno difícil não reduz vel. · Nunca se perde · Sempre alerta · Furtivo sem custo · 2× alimentos.'},
     {nome:'Inimigo Favorito — Humanos e Goblins',desc:'Vantagem em Sobrevivência (rastrear) e Inteligência (lembrar).'},
     {nome:'Assassinar',desc:'Vantagem contra quem não agiu. Acertos surpresos → crítico automático.'},
     {nome:'Ataque Furtivo (+3d6)',desc:'+3d6 dano com vantagem no ataque.'},
     {nome:'Ação Ardilosa',desc:'Ação bônus: Disparada, Desengajar ou Esconder-se.'},
-    {nome:'Precisão Élfica',desc:'Com vantagem em Des/Int/Sab/Car, pode rerolar um dos dados (rola 3, pega o melhor).'},
+    {nome:'Precisão Élfica',desc:'Com vantagem em Des/Int/Sab/Car, rola 3 dados e pega o melhor.'},
     {nome:'Esquiva Sobrenatural',desc:'Reação: reduz dano recebido à metade.'},
     {nome:'Surto de Ação',desc:'Ação extra no turno. Recupera em descanso.'},
     {nome:'Recupera Fôlego',desc:'Ação bônus: recupera 1d10+2 PV.'},
@@ -478,11 +895,11 @@ const DEF = {
   flechas:[
     {nome:'🏹 Flecha da Explosão',desc:'Evocação. Alvo e criaturas a 3m recebem 2d6 de energia cada.'},
     {nome:'🏹 Flecha da Sedução',desc:'+2d6 psíquico. CD Sab: falha → encantado por aliado a 9m por 1 turno.'},
-    {nome:'🏹 Flecha do Agarrar',desc:'+2d6 veneno. −3m vel. Mover 30cm+ → 2d6 cortante. 1 min. Remoção: For/Atletismo.'},
-    {nome:'🏹 Flecha do Banimento',desc:'CD Car: falha → banido para Feywild 1 turno (vel. 0, incapacitado).'},
+    {nome:'🏹 Flecha do Agarrar',desc:'+2d6 veneno. −3m vel. Mover 30cm+ → 2d6 cortante. 1 min.'},
+    {nome:'🏹 Flecha do Banimento',desc:'CD Car: falha → banido para Feywild 1 turno.'},
     {nome:'🏹 Flecha do Enfraquecimento',desc:'+2d6 necrótico. CD Con: falha → dano de arma reduzido à metade.'},
-    {nome:'🏹 Flecha Perfurante',desc:'Linha 9m×30cm, sem rolar ataque, ignora cobertura. CD Des = metade.'},
-    {nome:'🏹 Flecha Perseguidora',desc:'Ignora cobertura, sem rolar ataque. CD Des: falha = dano + revela posição.'},
+    {nome:'🏹 Flecha Perfurante',desc:'Linha 9m×30cm, sem ataque, ignora cobertura. CD Des = metade.'},
+    {nome:'🏹 Flecha Perseguidora',desc:'Ignora cobertura, sem ataque. CD Des: falha = dano + revela posição.'},
     {nome:'🏹 Flecha Sombria',desc:'+2d6 psíquico. CD Sab: falha → não vê além de 1,5m por 1 turno.'}
   ],
   usosFlecha:[true,true],
@@ -515,9 +932,6 @@ const DEF = {
   ]
 };
 
-/* ═══════════════════════════════════════════════════════
-   ESTADO
-═══════════════════════════════════════════════════════ */
 let S = {};
 
 function carregarEstado(){
@@ -531,172 +945,14 @@ function salvar(){
   try{ localStorage.setItem('eron_ficha', JSON.stringify(S)); }catch(e){}
 }
 
-/* ═══════════════════════════════════════════════════════
-   RENDERIZADORES
-═══════════════════════════════════════════════════════ */
-function renderClasses(){
-  const el = document.getElementById('classes-list');
-  el.innerHTML = S.classes.map((c,i)=>`
-    <div class="cl-row">
-      <span class="ci ed pos-rel" data-path="classes.${i}.nome">${esc(c.nome)}</span>
-      <span class="ci ed pos-rel" data-path="classes.${i}.sub">${esc(c.sub)}</span>
-      <span class="ci-dice ed pos-rel" data-path="classes.${i}.dado">${esc(c.dado)}</span>
-      <span class="ci-num ed pos-rel" data-path="classes.${i}.total">${c.total}</span>
-      <span class="ci-num ed pos-rel" data-path="classes.${i}.atual">${c.atual}</span>
-      <button class="rm-btn" onclick="remClasse(${i})" title="Remover">✕</button>
-    </div>`).join('');
-  setupEditaveis(el);
-}
-
-function renderAtaques(){
-  const el = document.getElementById('attacks-list');
-  el.innerHTML = S.ataques.map((a,i)=>`
-    <div class="atk-row">
-      <span class="ed pos-rel" data-path="ataques.${i}.nome">${esc(a.nome)}</span>
-      <span class="ed pos-rel" data-path="ataques.${i}.alcance">${esc(a.alcance)}</span>
-      <span class="ed pos-rel" data-path="ataques.${i}.dur">${esc(a.dur)}</span>
-      <span><div class="atk-bonus ed pos-rel" data-path="ataques.${i}.bonus">${esc(a.bonus)}</div></span>
-      <span class="atk-dmg ed pos-rel" data-path="ataques.${i}.dano">${esc(a.dano)}</span>
-      <button class="rm-btn" onclick="remAtaque(${i})" title="Remover">✕</button>
-    </div>`).join('');
-  setupEditaveis(el);
-}
-
-function renderItens(){
-  const el = document.getElementById('items-list');
-  el.innerHTML = S.itens.map((it,i)=>`
-    <div class="item-row">
-      <span class="item-name ed pos-rel" data-path="itens.${i}.nome">${esc(it.nome)}</span>
-      <span class="item-note ed pos-rel" data-path="itens.${i}.nota">${esc(it.nota)}</span>
-      <button class="rm-btn" style="margin-left:6px" onclick="remItem(${i})" title="Remover">✕</button>
-    </div>`).join('');
-  setupEditaveis(el);
-}
-
-function renderHabilidades(){
-  const el = document.getElementById('feats-list');
-  el.innerHTML = S.habilidades.map((h,i)=>`
-    <details>
-      <summary>
-        <span class="sum-inner">
-          <span class="ed pos-rel" data-path="habilidades.${i}.nome">${esc(h.nome)}</span>
-          <span class="sum-arrow">▾</span>
-        </span>
-        <button class="rm-btn" style="margin-left:8px;flex-shrink:0" onclick="remHabilidade(event,${i})" title="Remover">✕</button>
-      </summary>
-      <div class="det-bd ed pos-rel" data-path="habilidades.${i}.desc">${esc(h.desc)}</div>
-    </details>`).join('');
-  setupEditaveis(el);
-}
-
-function renderFlechas(){
-  const el = document.getElementById('arrows-list');
-  el.innerHTML = S.flechas.map((f,i)=>`
-    <details class="gold">
-      <summary>
-        <span class="sum-inner">
-          <span class="ed pos-rel" data-path="flechas.${i}.nome">${esc(f.nome)}</span>
-          <span class="sum-arrow">▾</span>
-        </span>
-        <button class="rm-btn" style="margin-left:8px;flex-shrink:0" onclick="remFlecha(event,${i})" title="Remover">✕</button>
-      </summary>
-      <div class="det-bd ed pos-rel" data-path="flechas.${i}.desc">${esc(f.desc)}</div>
-    </details>`).join('');
-  setupEditaveis(el);
-}
-
-function renderUsosFlecha(){
-  const el = document.getElementById('arrow-uses-dots');
-  el.innerHTML = S.usosFlecha.map((on,i)=>
-    `<span class="use-dot ${on?'on':''}" title="${on?'Disponível — clique para usar':'Usado — clique para restaurar'}" onclick="toggleUsoFlecha(${i})"></span>`
-  ).join('');
-}
-
-function renderSaves(){
-  const el = document.getElementById('saves-list');
-  el.innerHTML = S.saves.map((sv,i)=>`
-    <div class="sv-row">
-      <div class="dot ${sv.prof?'on':''}" title="${sv.prof?'Proficiente — clique para remover':'Não proficiente — clique para adicionar'}" onclick="toggleSave(${i})"></div>
-      <span class="sv-val ed pos-rel" data-path="saves.${i}.val">${esc(sv.val)}</span>
-      <span class="sv-name ed pos-rel" data-path="saves.${i}.nome">${esc(sv.nome)}</span>
-    </div>`).join('');
-  setupEditaveis(el);
-}
-
-function renderSkills(){
-  const el = document.getElementById('skills-list');
-  el.innerHTML = S.skills.map((sk,i)=>`
-    <div class="sk-row">
-      <div class="dot ${sk.prof?'on':''}" title="${sk.prof?'Proficiente — clique para remover':'Não proficiente — clique para adicionar'}" onclick="toggleSkill(${i})"></div>
-      <span class="sk-val ed pos-rel" data-path="skills.${i}.val">${esc(sk.val)}</span>
-      <span class="sk-ico">${sk.prof?'⚙':''}</span>
-      <span class="sk-name ed pos-rel" data-path="skills.${i}.nome">${esc(sk.nome)}<span class="sk-attr">(${esc(sk.attr)})</span></span>
-    </div>`).join('');
-  setupEditaveis(el);
-}
-
-function renderTudo(){
-  renderClasses();
-  renderAtaques();
-  renderItens();
-  renderHabilidades();
-  renderFlechas();
-  renderUsosFlecha();
-  renderSaves();
-  renderSkills();
-}
-
-/* ═══════════════════════════════════════════════════════
-   SISTEMA DE EDIÇÃO — DUPLO CLIQUE
-═══════════════════════════════════════════════════════ */
-function setupEditaveis(container){
-  (container||document).querySelectorAll('.ed').forEach(el=>{
-    if(el.dataset.edSetup) return;
-    el.dataset.edSetup='1';
-
-    el.addEventListener('dblclick', e=>{
-      e.stopPropagation();
-      abrirEdicao(el);
-    });
-    el.addEventListener('blur', ()=>fecharEdicao(el));
-    el.addEventListener('keydown', e=>{
-      if(e.key==='Enter'&&el.tagName!=='DIV'){ e.preventDefault(); el.blur(); }
-      if(e.key==='Escape'){ el.textContent=el.dataset.orig||el.textContent; el.blur(); }
-    });
-  });
-}
-
-function abrirEdicao(el){
-  el.dataset.orig = el.textContent;
-  el.contentEditable='true';
-  el.classList.add('ativo');
-  el.focus();
-  const r=document.createRange(); r.selectNodeContents(el);
-  const s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
-}
-
-function fecharEdicao(el){
-  el.contentEditable='false';
-  el.classList.remove('ativo');
-  const path = el.dataset.path;
-  const id   = el.id;
-  const val  = el.textContent.trim();
-  // Persistir por data-path (elementos dinâmicos)
-  if(path){
-    const parts = path.split('.');
-    let ref = S;
-    for(let i=0;i<parts.length-1;i++){
-      ref = isNaN(parts[i]) ? ref[parts[i]] : ref[parseInt(parts[i])];
-    }
-    const last = parts[parts.length-1];
-    ref[last] = val;
-    salvar();
-  } else if(id){
-    // Persistir por id (elementos estáticos)
-    const st = JSON.parse(localStorage.getItem('eron_static')||'{}');
-    st[id] = val;
-    localStorage.setItem('eron_static', JSON.stringify(st));
-  }
+/* ══════════════════════════════════════════
+   PERSISTÊNCIA — campos estáticos (por id)
+══════════════════════════════════════════ */
+function salvarCampoId(el){
+  if(!el.id) return;
+  const st = JSON.parse(localStorage.getItem('eron_static')||'{}');
+  st[el.id] = el.textContent.trim();
+  localStorage.setItem('eron_static', JSON.stringify(st));
 }
 
 function carregarEstaticos(){
@@ -707,9 +963,152 @@ function carregarEstaticos(){
   });
 }
 
-/* ═══════════════════════════════════════════════════════
-   TOGGLES
-═══════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   PERSISTÊNCIA — campos dinâmicos (data-path)
+   Salva ao perder foco dentro de cada elemento
+══════════════════════════════════════════ */
+function setupBlurSave(container){
+  (container||document).querySelectorAll('[data-path]').forEach(el=>{
+    if(el.dataset.blurSetup) return;
+    el.dataset.blurSetup='1';
+    el.addEventListener('blur', ()=>{
+      if(!modoEdicao) return;
+      const path = el.dataset.path;
+      const parts = path.split('.');
+      let ref = S;
+      for(let i=0;i<parts.length-1;i++){
+        ref = isNaN(parts[i]) ? ref[parts[i]] : ref[parseInt(parts[i])];
+      }
+      ref[parts[parts.length-1]] = el.textContent.trim();
+      salvar();
+    });
+    el.addEventListener('keydown', e=>{
+      if(e.key==='Enter'){ e.preventDefault(); el.blur(); }
+      if(e.key==='Escape'){ el.blur(); }
+    });
+  });
+}
+
+/* ══════════════════════════════════════════
+   RENDERIZADORES
+══════════════════════════════════════════ */
+function renderClasses(){
+  const el = document.getElementById('classes-list');
+  const isEd = modoEdicao;
+  el.innerHTML = S.classes.map((c,i)=>`
+    <div class="cl-row">
+      <span class="ci ed" data-path="classes.${i}.nome" contenteditable="${isEd}">${esc(c.nome)}</span>
+      <span class="ci ed" data-path="classes.${i}.sub" contenteditable="${isEd}">${esc(c.sub)}</span>
+      <span class="ci-dice ed" data-path="classes.${i}.dado" contenteditable="${isEd}">${esc(c.dado)}</span>
+      <span class="ci-num ed" data-path="classes.${i}.total" contenteditable="${isEd}">${c.total}</span>
+      <span class="ci-num ed" data-path="classes.${i}.atual" contenteditable="${isEd}">${c.atual}</span>
+      <button class="rm-btn edit-only" onclick="remClasse(${i})" title="Remover">✕</button>
+    </div>`).join('');
+  setupBlurSave(el);
+}
+
+function renderAtaques(){
+  const el = document.getElementById('attacks-list');
+  const isEd = modoEdicao;
+  el.innerHTML = S.ataques.map((a,i)=>`
+    <div class="atk-row">
+      <span class="ed" data-path="ataques.${i}.nome" contenteditable="${isEd}">${esc(a.nome)}</span>
+      <span class="ed" data-path="ataques.${i}.alcance" contenteditable="${isEd}">${esc(a.alcance)}</span>
+      <span class="ed" data-path="ataques.${i}.dur" contenteditable="${isEd}">${esc(a.dur)}</span>
+      <span><div class="atk-bonus ed" data-path="ataques.${i}.bonus" contenteditable="${isEd}">${esc(a.bonus)}</div></span>
+      <span class="atk-dmg ed" data-path="ataques.${i}.dano" contenteditable="${isEd}">${esc(a.dano)}</span>
+      <button class="rm-btn edit-only" onclick="remAtaque(${i})" title="Remover">✕</button>
+    </div>`).join('');
+  setupBlurSave(el);
+}
+
+function renderItens(){
+  const el = document.getElementById('items-list');
+  const isEd = modoEdicao;
+  el.innerHTML = S.itens.map((it,i)=>`
+    <div class="item-row">
+      <span class="item-name ed" data-path="itens.${i}.nome" contenteditable="${isEd}">${esc(it.nome)}</span>
+      <span class="item-note ed" data-path="itens.${i}.nota" contenteditable="${isEd}">${esc(it.nota)}</span>
+      <button class="rm-btn edit-only" style="margin-left:6px" onclick="remItem(${i})" title="Remover">✕</button>
+    </div>`).join('');
+  setupBlurSave(el);
+}
+
+function renderHabilidades(){
+  const el = document.getElementById('feats-list');
+  const isEd = modoEdicao;
+  el.innerHTML = S.habilidades.map((h,i)=>`
+    <details>
+      <summary>
+        <span class="sum-inner">
+          <span class="ed" data-path="habilidades.${i}.nome" contenteditable="${isEd}">${esc(h.nome)}</span>
+          <span class="sum-arrow">▾</span>
+        </span>
+        <button class="rm-btn edit-only" style="margin-left:8px;flex-shrink:0" onclick="remHabilidade(event,${i})" title="Remover">✕</button>
+      </summary>
+      <div class="det-bd ed" data-path="habilidades.${i}.desc" contenteditable="${isEd}">${esc(h.desc)}</div>
+    </details>`).join('');
+  setupBlurSave(el);
+}
+
+function renderFlechas(){
+  const el = document.getElementById('arrows-list');
+  const isEd = modoEdicao;
+  el.innerHTML = S.flechas.map((f,i)=>`
+    <details class="gold">
+      <summary>
+        <span class="sum-inner">
+          <span class="ed" data-path="flechas.${i}.nome" contenteditable="${isEd}">${esc(f.nome)}</span>
+          <span class="sum-arrow">▾</span>
+        </span>
+        <button class="rm-btn edit-only" style="margin-left:8px;flex-shrink:0" onclick="remFlecha(event,${i})" title="Remover">✕</button>
+      </summary>
+      <div class="det-bd ed" data-path="flechas.${i}.desc" contenteditable="${isEd}">${esc(f.desc)}</div>
+    </details>`).join('');
+  setupBlurSave(el);
+}
+
+function renderUsosFlecha(){
+  const el = document.getElementById('arrow-uses-dots');
+  el.innerHTML = S.usosFlecha.map((on,i)=>
+    `<span class="use-dot ${on?'on':''}" title="${on?'Disponível':'Usado'}" onclick="toggleUsoFlecha(${i})"></span>`
+  ).join('');
+}
+
+function renderSaves(){
+  const el = document.getElementById('saves-list');
+  const isEd = modoEdicao;
+  el.innerHTML = S.saves.map((sv,i)=>`
+    <div class="sv-row">
+      <div class="dot ${sv.prof?'on':''}" onclick="toggleSave(${i})"></div>
+      <span class="sv-val ed" data-path="saves.${i}.val" contenteditable="${isEd}">${esc(sv.val)}</span>
+      <span class="sv-name ed" data-path="saves.${i}.nome" contenteditable="${isEd}">${esc(sv.nome)}</span>
+    </div>`).join('');
+  setupBlurSave(el);
+}
+
+function renderSkills(){
+  const el = document.getElementById('skills-list');
+  const isEd = modoEdicao;
+  el.innerHTML = S.skills.map((sk,i)=>`
+    <div class="sk-row">
+      <div class="dot ${sk.prof?'on':''}" onclick="toggleSkill(${i})"></div>
+      <span class="sk-val ed" data-path="skills.${i}.val" contenteditable="${isEd}">${esc(sk.val)}</span>
+      <span class="sk-ico">${sk.prof?'⚙':''}</span>
+      <span class="sk-name ed" data-path="skills.${i}.nome" contenteditable="${isEd}">${esc(sk.nome)}<span class="sk-attr">(${esc(sk.attr)})</span></span>
+    </div>`).join('');
+  setupBlurSave(el);
+}
+
+function renderTudo(){
+  renderClasses(); renderAtaques(); renderItens();
+  renderHabilidades(); renderFlechas(); renderUsosFlecha();
+  renderSaves(); renderSkills();
+}
+
+/* ══════════════════════════════════════════
+   TOGGLES (sempre funcionam)
+══════════════════════════════════════════ */
 function toggleInspo(){
   const sq=document.getElementById('inspo-sq');
   sq.classList.toggle('on');
@@ -717,101 +1116,604 @@ function toggleInspo(){
   st.inspo=sq.classList.contains('on');
   localStorage.setItem('eron_static',JSON.stringify(st));
 }
+function toggleSave(i){ S.saves[i].prof=!S.saves[i].prof; salvar(); renderSaves(); }
+function toggleSkill(i){ S.skills[i].prof=!S.skills[i].prof; salvar(); renderSkills(); }
+function toggleUsoFlecha(i){ S.usosFlecha[i]=!S.usosFlecha[i]; salvar(); renderUsosFlecha(); }
 
-function toggleSave(i){
-  S.saves[i].prof = !S.saves[i].prof;
-  salvar(); renderSaves();
-}
-
-function toggleSkill(i){
-  S.skills[i].prof = !S.skills[i].prof;
-  salvar(); renderSkills();
-}
-
-function toggleUsoFlecha(i){
-  S.usosFlecha[i] = !S.usosFlecha[i];
-  salvar(); renderUsosFlecha();
-}
-
-/* ═══════════════════════════════════════════════════════
+/* ══════════════════════════════════════════
    ADICIONAR / REMOVER
-═══════════════════════════════════════════════════════ */
-function addClasse(){
-  S.classes.push({nome:'Nova Classe',sub:'Subclasse',dado:'D10',total:1,atual:1});
-  salvar(); renderClasses();
-}
+══════════════════════════════════════════ */
+function addClasse(){ S.classes.push({nome:'Nova Classe',sub:'Subclasse',dado:'D10',total:1,atual:1}); salvar(); renderClasses(); }
 function remClasse(i){ S.classes.splice(i,1); salvar(); renderClasses(); }
 
-function addAtaque(){
-  S.ataques.push({nome:'Novo Ataque',alcance:'—',dur:'—',bonus:'+0',dano:'—'});
-  salvar(); renderAtaques();
-}
+function addAtaque(){ S.ataques.push({nome:'Novo Ataque',alcance:'—',dur:'—',bonus:'+0',dano:'—'}); salvar(); renderAtaques(); }
 function remAtaque(i){ S.ataques.splice(i,1); salvar(); renderAtaques(); }
 
-function addItem(){
-  S.itens.push({nome:'Novo Item',nota:''});
-  salvar(); renderItens();
-}
+function addItem(){ S.itens.push({nome:'Novo Item',nota:''}); salvar(); renderItens(); }
 function remItem(i){ S.itens.splice(i,1); salvar(); renderItens(); }
 
-function addHabilidade(){
-  S.habilidades.push({nome:'Nova Habilidade',desc:'Descrição da habilidade.'});
-  salvar(); renderHabilidades();
-}
-function remHabilidade(e,i){ e.stopPropagation(); e.preventDefault(); S.habilidades.splice(i,1); salvar(); renderHabilidades(); }
+function addHabilidade(){ S.habilidades.push({nome:'Nova Habilidade',desc:'Descrição da habilidade.'}); salvar(); renderHabilidades(); }
+function remHabilidade(e,i){ e.stopPropagation();e.preventDefault(); S.habilidades.splice(i,1); salvar(); renderHabilidades(); }
 
-function addFlecha(){
-  S.usosFlecha.push(true);
-  S.flechas.push({nome:'🏹 Nova Flecha',desc:'Descrição da flecha arcana.'});
-  salvar(); renderFlechas(); renderUsosFlecha();
-}
-function remFlecha(e,i){
-  e.stopPropagation(); e.preventDefault();
-  S.flechas.splice(i,1);
-  if(S.usosFlecha.length>0) S.usosFlecha.pop();
-  salvar(); renderFlechas(); renderUsosFlecha();
-}
+function addFlecha(){ S.usosFlecha.push(true); S.flechas.push({nome:'🏹 Nova Flecha',desc:'Descrição da flecha arcana.'}); salvar(); renderFlechas(); renderUsosFlecha(); }
+function remFlecha(e,i){ e.stopPropagation();e.preventDefault(); S.flechas.splice(i,1); if(S.usosFlecha.length>0) S.usosFlecha.pop(); salvar(); renderFlechas(); renderUsosFlecha(); }
 
-/* ═══════════════════════════════════════════════════════
+/* ══════════════════════════════════════════
    MOBILE TABS
-═══════════════════════════════════════════════════════ */
+══════════════════════════════════════════ */
 const SECS=['geral','attrs','saves','skills','combat','feats','equip'];
 function go(id,btn){
   if(window.innerWidth>900) return;
   SECS.forEach(s=>{ const el=document.getElementById('s-'+s); if(el) el.classList.toggle('vis',s===id); });
+  // No mobile, rows com data-s='geral' aparecem junto
+  document.querySelectorAll('.drag-row[data-s]').forEach(el=>{
+    el.classList.toggle('vis', el.getAttribute('data-s')===id);
+  });
   document.querySelectorAll('.mob-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function syncLayout(){
   const mob=window.innerWidth<=900;
-  if(!mob){ SECS.forEach(s=>{ const el=document.getElementById('s-'+s); if(el){el.classList.remove('vis');el.style.removeProperty('display');} }); }
-  else{
+  if(!mob){
+    SECS.forEach(s=>{ const el=document.getElementById('s-'+s); if(el){el.classList.remove('vis');el.style.removeProperty('display');} });
+    document.querySelectorAll('.drag-row[data-s]').forEach(el=>{ el.classList.remove('vis'); el.style.removeProperty('display'); });
+    document.querySelectorAll('.drag-section').forEach(el=>el.style.removeProperty('display'));
+  } else {
     const act=document.querySelector('.mob-btn.active');
     const aid=act?.getAttribute('onclick')?.match(/'(\w+)'/)?.[1]||'geral';
     SECS.forEach(s=>{ const el=document.getElementById('s-'+s); if(el) el.classList.toggle('vis',s===aid); });
+    document.querySelectorAll('.drag-row[data-s]').forEach(el=>{
+      el.classList.toggle('vis', el.getAttribute('data-s')===aid);
+    });
   }
 }
 window.addEventListener('resize',syncLayout);
 
-/* ═══════════════════════════════════════════════════════
-   UTILITÁRIOS
-═══════════════════════════════════════════════════════ */
 function esc(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
 
-/* ═══════════════════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════════════════ */
-(function init(){
-  carregarEstado();
-  renderTudo();
-  setupEditaveis(); // elementos estáticos
-  carregarEstaticos();
-  syncLayout();
+/* ══════════════════════════════════════════════════════════════
+   RESIZE DE CARDS — sistema de blocos discretos
+   Cada card pode crescer de 1–6 colunas e 1–8 linhas
+   A unidade é 1 bloco = (largura_container/6) × 72px
+══════════════════════════════════════════════════════════════ */
 
-  // Restaurar inspiração
+function parseSpan(el, axis){
+  if(axis === 'h'){
+    // prefer inline style (unlimited)
+    if(el.style.gridRow){
+      const m = el.style.gridRow.match(/span\s+(\d+)/);
+      if(m) return parseInt(m[1]);
+    }
+    const cls = Array.from(el.classList).find(c=>c.startsWith('span-h-'));
+    if(!cls) return 1;
+    return parseInt(cls.replace('span-h-',''));
+  }
+  const cls = Array.from(el.classList).find(c=>c.startsWith(`span-${axis}-`));
+  if(!cls) return 1;
+  return parseInt(cls.replace(`span-${axis}-`,''));
+}
+
+function setSpan(el, axis, n){
+  if(axis === 'h'){
+    // use inline style so height is unlimited (no CSS class limit)
+    Array.from(el.classList).forEach(c=>{
+      if(c.startsWith('span-h-')) el.classList.remove(c);
+    });
+    el.style.gridRow = `span ${n}`;
+    return;
+  }
+  // width: keep class system (capped at 6 columns)
+  Array.from(el.classList).forEach(c=>{
+    if(c.startsWith(`span-${axis}-`)) el.classList.remove(c);
+  });
+  el.classList.add(`span-${axis}-${n}`);
+}
+
+/* Cria 3 handles (right, bottom, corner) em todos os .draggable */
+function addResizeHandles(){
+  document.querySelectorAll('.draggable').forEach(el=>{
+    if(el.dataset.rhReady) return;
+    el.dataset.rhReady='1';
+
+    const maxW = 6;
+    const maxH = 9999;   // unlimited vertical resize
+    const minW = 1;
+    const minH = 1;
+
+    ['right','bottom','corner'].forEach(dir=>{
+      const h = document.createElement('div');
+      h.className = 'resize-handle rh-'+dir;
+      h.dataset.dir = dir;
+      el.appendChild(h);
+      attachResizeHandler(h, el, maxW, maxH, minW, minH);
+    });
+  });
+}
+
+function computeMinBlocks(card, blockH, gap, minH){
+  /* Mede a altura intrínseca do conteúdo somando os filhos diretamente.
+     scrollHeight é inútil aqui pois flex:1 estica o elemento ao tamanho do grid,
+     fazendo scrollHeight === clientHeight mesmo com conteúdo menor. */
+  const SLOT = blockH + gap; // 60px por bloco
+
+  if(card.classList.contains('card')){
+    const kids = Array.from(card.children).filter(c =>
+      !c.classList.contains('drag-handle') &&
+      !c.classList.contains('card-float-handle') &&
+      !c.classList.contains('resize-handle')
+    );
+    if(!kids.length) return minH;
+
+    // Separa o sec-title (e outros headers fixos) do scroll container (último filho)
+    const scrollEl  = kids[kids.length - 1];
+    const headers   = kids.slice(0, -1);
+
+    // Soma a altura dos headers fixos (sec-title, money-bar, atk-hd, etc.)
+    let fixedH = 0;
+    headers.forEach(h => { fixedH += h.getBoundingClientRect().height; });
+
+    // Soma a altura intrínseca dos FILHOS do scroll container
+    // (os itens de lista: sv-row, sk-row, details, item-row, etc.)
+    let contentH = 0;
+    Array.from(scrollEl.children).forEach(child => {
+      contentH += child.getBoundingClientRect().height;
+    });
+    // Inclui padding interno do scrollEl
+    const cs = getComputedStyle(scrollEl);
+    contentH += parseFloat(cs.paddingTop||0) + parseFloat(cs.paddingBottom||0);
+
+    const needH = fixedH + contentH;
+    return Math.max(minH, Math.ceil((needH + gap) / SLOT));
+  }
+
+  // Fallback para stat-box, pill, attr-box, etc.
+  // Soma os filhos não-handle
+  let naturalH = 0;
+  Array.from(card.children).forEach(c => {
+    if(!c.classList.contains('drag-handle') &&
+       !c.classList.contains('resize-handle')) {
+      naturalH += c.getBoundingClientRect().height;
+    }
+  });
+  const cs2 = getComputedStyle(card);
+  naturalH += parseFloat(cs2.paddingTop||0) + parseFloat(cs2.paddingBottom||0);
+  return Math.max(minH, Math.ceil((naturalH + gap) / SLOT));
+}
+
+function attachResizeHandler(handle, card, maxW, maxH, minW, minH){
+  let startX, startY, startW, startH, blockW, blockH;
+  let dynMinH, dynMinW;
+  let preview;
+  let startCardWidth, startCardHeight;
+  let dir;
+  const GAP = 10;
+
+  function onDown(e){
+    if(!modoEdicao) return;
+    e.preventDefault(); e.stopPropagation();
+
+    const t = e.touches ? e.touches[0] : e;
+    startX = t.clientX;
+    startY = t.clientY;
+    dir = handle.dataset.dir;
+
+    const row = card.parentNode;
+    const rowRect = row.getBoundingClientRect();
+    blockW = (rowRect.width - GAP*5) / 6;
+    blockH = 50; // grid-auto-rows do CSS
+
+    startW = parseSpan(card, 'w');
+    startH = parseSpan(card, 'h');
+
+    // Mínimo dinâmico baseado no conteúdo real
+    dynMinH = computeMinBlocks(card, blockH, GAP, minH);
+    dynMinW = minW;
+
+    card.classList.add('resizing');
+
+    const r = card.getBoundingClientRect();
+    startCardWidth  = r.width;
+    startCardHeight = r.height;
+
+    // Preview: acompanha o mouse exatamente
+    preview = document.createElement('div');
+    preview.className = 'resize-preview';
+    preview.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;transition:none;`;
+    document.body.appendChild(preview);
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup',   onUp);
+    document.addEventListener('touchmove', onMove, {passive:false});
+    document.addEventListener('touchend',  onUp);
+  }
+
+  function onMove(e){
+    if(e.touches) e.preventDefault();
+    const t = e.touches ? e.touches[0] : e;
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+    const SLOT_W = blockW + GAP;
+    const SLOT_H = blockH + GAP;
+
+    // ── Snap ao vivo no card (igual ao comportamento original) ──
+    let newW = startW, newH = startH;
+    if(dir==='right' || dir==='corner'){
+      newW = Math.max(dynMinW, Math.min(maxW,
+        Math.round((startCardWidth + dx + GAP) / SLOT_W)
+      ));
+    }
+    if(dir==='bottom' || dir==='corner'){
+      newH = Math.max(dynMinH, Math.min(maxH,
+        Math.round((startCardHeight + dy + GAP) / SLOT_H)
+      ));
+    }
+    if(newW !== parseSpan(card,'w')) setSpan(card,'w',newW);
+    if(newH !== parseSpan(card,'h')) setSpan(card,'h',newH);
+
+    // ── Preview segue o mouse suavemente ──
+    if(preview){
+      if(dir==='right' || dir==='corner')
+        preview.style.width  = Math.max(40, startCardWidth  + dx) + 'px';
+      if(dir==='bottom' || dir==='corner')
+        preview.style.height = Math.max(20, startCardHeight + dy) + 'px';
+    }
+  }
+
+  function onUp(){
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup',   onUp);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend',  onUp);
+    card.classList.remove('resizing');
+    if(preview){ preview.remove();
+      preview = null;
+    }
+    saveDragLayout();
+  }
+
+  handle.addEventListener('mousedown', onDown);
+  handle.addEventListener('touchstart', onDown, {passive:false});
+}
+
+
+const DD = {
+  el:null, clone:null,
+  oX:0, oY:0,
+  holdTimer:null, active:false,
+  lastTarget:null, lastZone:null,
+  lastRow:null,
+};
+
+/* ─ Registra drag em todos os .draggable ─ */
+function initDragHandlers(){
+  if(window.innerWidth<=900) return;
+  document.querySelectorAll('.draggable').forEach(card=>{
+    if(card.dataset.ddReady) return;
+    card.dataset.ddReady='1';
+    const handle=card.querySelector('.drag-handle');
+    if(!handle) return;
+
+    handle.addEventListener('mousedown', e=>{
+      if(!modoEdicao) return;
+      e.preventDefault(); e.stopPropagation();
+      const r=card.getBoundingClientRect();
+      DD.oX=e.clientX-r.left; DD.oY=e.clientY-r.top;
+      DD.holdTimer=setTimeout(()=>beginDrag(card,e.clientX,e.clientY), 500);
+      document.addEventListener('mouseup',()=>{clearTimeout(DD.holdTimer);DD.holdTimer=null;},{once:true});
+    });
+
+    handle.addEventListener('touchstart', e=>{
+      if(!modoEdicao) return;
+      const t=e.touches[0], r=card.getBoundingClientRect();
+      DD.oX=t.clientX-r.left; DD.oY=t.clientY-r.top;
+      DD.holdTimer=setTimeout(()=>beginDrag(card,t.clientX,t.clientY), 600);
+    },{passive:true});
+    handle.addEventListener('touchmove', e=>{
+      if(DD.holdTimer){clearTimeout(DD.holdTimer);DD.holdTimer=null;}
+      if(DD.active){e.preventDefault();moveClone(e.touches[0].clientX,e.touches[0].clientY);}
+    },{passive:false});
+    handle.addEventListener('touchend', ()=>{
+      clearTimeout(DD.holdTimer);DD.holdTimer=null;
+      if(DD.active) endDrag();
+    });
+  });
+}
+
+function beginDrag(card,cx,cy){
+  // Mata qualquer clone órfão de drags anteriores que não foram limpos
+  document.querySelectorAll('[data-dd-clone]').forEach(el=>el.remove());
+
+  DD.active=true; DD.el=card;
+  document.body.classList.add('dragging-active');
+  const r=card.getBoundingClientRect();
+
+  card.style.visibility='hidden';
+  card.style.pointerEvents='none';
+
+  DD.clone=card.cloneNode(true);
+  DD.clone.dataset.ddClone='1';   // marca para limpeza garantida
+  DD.clone.style.cssText=`
+    position:fixed;left:${r.left}px;top:${r.top}px;
+    width:${r.width}px;height:${r.height}px;
+    z-index:3000;pointer-events:none;margin:0;
+    opacity:.9;transform:scale(1.04);
+    box-shadow:0 24px 64px rgba(0,0,0,.75),0 0 0 1.5px rgba(196,152,58,.45);
+    border-radius:var(--r);background:rgba(42,48,72,.97);
+    filter:brightness(1.1);transition:none;will-change:left,top;
+  `;
+  document.body.appendChild(DD.clone);
+
+  document.addEventListener('mousemove',onMouseMove);
+  document.addEventListener('mouseup',onMouseUp);
+}
+
+function onMouseMove(e){ moveClone(e.clientX,e.clientY); }
+
+function moveClone(cx,cy){
+  if(!DD.active||!DD.clone) return;
+  DD.clone.style.left=(cx-DD.oX)+'px';
+  DD.clone.style.top =(cy-DD.oY)+'px';
+  applyFobia(cx,cy);
+}
+
+/* ─ Fobia: alvo foge, vizinhos acompanham ─ */
+function applyFobia(cx,cy){
+  resetFobia();
+  const hits=document.elementsFromPoint(cx,cy);
+  let target=null;
+  for(const h of hits){
+    const c=h.closest('.draggable');
+    if(c&&c!==DD.el&&c.style.visibility!=='hidden'){target=c;break;}
+  }
+  if(!target){
+    // Sem card-alvo: verifica se o cursor está sobre um drag-row vazio
+    DD.lastRow=null;
+    for(const h of hits){
+      if(h.classList&&h.classList.contains('drag-row')){DD.lastRow=h;break;}
+      const row=h.closest&&h.closest('.drag-row');
+      if(row){DD.lastRow=row;break;}
+    }
+    DD.lastTarget=null;DD.lastZone=null;return;
+  }
+  DD.lastRow=null;
+
+  const r=target.getBoundingClientRect();
+  const rx=(cx-r.left)/r.width, ry=(cy-r.top)/r.height;
+  const dX=Math.abs(rx-.5), dY=Math.abs(ry-.5);
+  const zone=dY>=dX?(ry<.5?'top':'bottom'):(rx<.5?'left':'right');
+
+  DD.lastTarget=target; DD.lastZone=zone;
+
+  const proximity=Math.max(dX,dY);
+  const nudge=16*(1-proximity*0.5);
+  nudgeEl(target,zone,nudge);
+
+  // vizinhos no mesmo container
+  const siblings=Array.from(target.parentNode.children);
+  const idx=siblings.indexOf(target);
+  siblings.forEach((sib,i)=>{
+    if(sib===target||sib===DD.el||!sib.classList.contains('draggable')) return;
+    const dist=Math.abs(i-idx);
+    if(dist<=2) nudgeEl(sib,zone,nudge*0.28/dist);
+  });
+}
+
+function nudgeEl(el,zone,amt){
+  el.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
+  const v=Math.round(amt);
+  if(zone==='top')         el.style.transform=`translateY(${v}px)`;
+  else if(zone==='bottom') el.style.transform=`translateY(-${v}px)`;
+  else if(zone==='left')   el.style.transform=`translateX(${v}px)`;
+  else                     el.style.transform=`translateX(-${v}px)`;
+}
+
+function resetFobia(){
+  document.querySelectorAll('.draggable, .drag-row').forEach(el=>{
+    if(el===DD.el) return;
+    if(el.style.transform){
+      el.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
+      el.style.transform='';
+    }
+  });
+}
+
+function onMouseUp(){ endDrag(); }
+
+/* ─ Helpers para criação de linha ─
+   Uma "linha" é o container imediato que agrupa cards:
+   top-grid, stats-bar, pills-bar, attrs-bar, mid-grid, bot-grid, ou drag-row criada dinamicamente */
+function isRowContainer(el){
+  if(!el) return false;
+  return el.classList.contains('drag-row');
+}
+
+function createNewRow(){
+  const row=document.createElement('div');
+  row.className='drag-row';
+  return row;
+}
+
+function cleanEmptyRows(){
+  document.querySelectorAll('.drag-row').forEach(row=>{
+    const hasCards=Array.from(row.children).some(c=>c.classList.contains('draggable'));
+    if(!hasCards) row.remove();
+  });
+}
+
+function endDrag(){
+  if(!DD.active) return;
+  DD.active=false;
+  document.removeEventListener('mousemove',onMouseMove);
+  document.removeEventListener('mouseup',onMouseUp);
+  document.body.classList.remove('dragging-active');
+  resetFobia();
+
+  const card=DD.el, target=DD.lastTarget, zone=DD.lastZone;
+
+  // FLIP: captura posições antes
+  const peers=Array.from(document.querySelectorAll('.draggable, .drag-row')).filter(el=>el!==card);
+  const before=new Map(); peers.forEach(el=>before.set(el,el.getBoundingClientRect()));
+
+  // Mantém o card oculto — será revelado só quando o clone terminar a animação
+  card.style.pointerEvents='';
+
+  const sourceParent=card.parentNode;
+
+  let moved=false;
+  if(target&&zone){
+    const targetParent=target.parentNode;
+
+    if(zone==='top' || zone==='bottom'){
+      const targetRowContainer = isRowContainer(targetParent) ? targetParent : target;
+      const pageContainer      = targetRowContainer.parentNode;
+
+      card.parentNode.removeChild(card);
+
+      const newRow = createNewRow();
+      newRow.appendChild(card);
+
+      if(zone==='top'){
+        pageContainer.insertBefore(newRow, targetRowContainer);
+      } else {
+        const next=targetRowContainer.nextSibling;
+        next ? pageContainer.insertBefore(newRow, next) : pageContainer.appendChild(newRow);
+      }
+      moved=true;
+    } else {
+      card.parentNode.removeChild(card);
+      if(zone==='left'){
+        targetParent.insertBefore(card, target);
+      } else {
+        const next=target.nextSibling;
+        next ? targetParent.insertBefore(card, next) : targetParent.appendChild(card);
+      }
+      moved=true;
+    }
+  } else if(DD.lastRow && DD.lastRow !== card.parentNode){
+    // Drop em espaço vazio dentro de um drag-row existente
+    card.parentNode.removeChild(card);
+    DD.lastRow.appendChild(card);
+    moved=true;
+  }
+
+  // Limpa linhas vazias
+  cleanEmptyRows();
+
+  // Revela o card na posição final imediatamente
+  card.style.visibility = '';
+  card.style.pointerEvents = '';
+
+  // FLIP animation nos peers
+  peers.forEach(el=>{
+    if(!el.isConnected) return;
+    const b=before.get(el); if(!b) return;
+    const a=el.getBoundingClientRect();
+    const dx=b.left-a.left, dy=b.top-a.top;
+    if(Math.abs(dx)<1&&Math.abs(dy)<1) return;
+    el.style.transition='none';
+    el.style.transform=`translate(${dx}px,${dy}px)`;
+    el.getBoundingClientRect();
+    el.style.transition='transform .4s cubic-bezier(.34,1.12,.64,1)';
+    el.style.transform='';
+    el.addEventListener('transitionend',()=>{el.style.transition='';el.style.transform='';},{once:true});
+  });
+
+  // Remove clone com fade — duplo rAF garante que o browser pinta o frame atual
+  // antes de aplicar a transição (único método confiável cross-browser)
+  if(DD.clone){
+    const ref = DD.clone;
+    DD.clone = null;
+    const removeRef = () => { try{ ref.remove(); }catch(e){} };
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        ref.style.transition = 'opacity .22s ease, transform .22s ease';
+        ref.style.opacity    = '0';
+        ref.style.transform  = 'scale(0.94)';
+        // transitionend como primary, setTimeout como fallback absoluto
+        ref.addEventListener('transitionend', removeRef, {once:true});
+        setTimeout(removeRef, 400);
+      });
+    });
+  }
+
+  DD.el=null; DD.lastTarget=null; DD.lastZone=null; DD.lastRow=null;
+  if(moved) saveDragLayout();
+}
+
+/* ─ Persistência: salva a estrutura completa de linhas + spans ─ */
+function saveDragLayout(){
+  const page=document.querySelector('.page');
+  if(!page) return;
+  const layout=[];
+  Array.from(page.children).forEach(row=>{
+    if(!isRowContainer(row)) return;
+    const cards=Array.from(row.children).filter(c=>c.classList.contains('draggable'));
+    if(cards.length===0) return;
+    layout.push({
+      cards: cards.map(c=>({
+        id: c.dataset.dragId,
+        w:  parseSpan(c,'w'),
+        h:  parseSpan(c,'h')
+      }))
+    });
+  });
+  try{ localStorage.setItem('eron_layout_v2', JSON.stringify(layout)); }catch(e){}
+}
+
+function restoreDragLayout(){
+  try{
+    const layout=JSON.parse(localStorage.getItem('eron_layout_v2')||'null');
+    if(!layout) return;
+    const page=document.querySelector('.page');
+    if(!page) return;
+
+    const allCards={};
+    document.querySelectorAll('.draggable').forEach(c=>{
+      if(c.dataset.dragId) allCards[c.dataset.dragId]=c;
+    });
+
+    // Remove todas as linhas atuais
+    Array.from(page.children).forEach(ch=>{
+      if(isRowContainer(ch)) ch.remove();
+    });
+
+    // Reconstrói tudo como drag-row
+    layout.forEach(item=>{
+      const row=createNewRow();
+      item.cards.forEach(cdata=>{
+        const card=allCards[cdata.id];
+        if(card){
+          setSpan(card, 'w', cdata.w || 1);
+          setSpan(card, 'h', cdata.h || 1);
+          row.appendChild(card);
+        }
+      });
+      page.appendChild(row);
+    });
+  }catch(e){ console.warn('restoreDragLayout err:',e); }
+}
+
+/* ══════════════════════════════════════════
+   RESET DE LAYOUT
+══════════════════════════════════════════ */
+function resetLayout(){
+  if(!confirm('Resetar o layout para o padrão original?\n(Os dados do personagem NÃO serão apagados)')) return;
+  try{ localStorage.removeItem('eron_layout_v2'); }catch(e){}
+  location.reload();
+}
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+(function init(){
+  carregarEstado(); renderTudo(); carregarEstaticos(); syncLayout();
   const st=JSON.parse(localStorage.getItem('eron_static')||'{}');
   if(st.inspo) document.getElementById('inspo-sq').classList.add('on');
+  restoreDragLayout();
+  addResizeHandles();
+  initDragHandlers();
+  window.addEventListener('resize',()=>{ if(window.innerWidth>900){ initDragHandlers(); addResizeHandles(); }});
 })();
 </script>
 </body>
